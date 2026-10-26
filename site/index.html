@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Don Tuco — the WhatsApp host for tour operators</title>
+<title>Don Tuco, the WhatsApp host for tour operators</title>
 <meta name="description" content="Don Tuco answers your business WhatsApp in seconds: checks the calendar, takes the booking, sends the confirmation, and hands off to you when it matters. Built on AWS End User Messaging Social, Amazon Bedrock, and Amazon SES.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%232b1a10'/%3E%3Cpath d='M9 14c0-4 3-7 7-7 2.5 0 4 1 4 1l9 4-9 5s-2 4-7 4c-3 0-4-2-4-2z' fill='%23f2a93b'/%3E%3Ccircle cx='13' cy='13' r='1.6' fill='%23f7f1e5'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/don-tuco-avatar-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/don-tuco-avatar-192.png">
+<link rel="apple-touch-icon" href="assets/don-tuco-avatar-180.png">
 <style>
 :root{
   --ink:#241309;
@@ -32,7 +34,7 @@ a{color:var(--leaf)}
 header{padding:22px 0}
 header .wrap{display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:1.25rem;text-decoration:none;color:var(--ink)}
-.brand svg{width:34px;height:34px}
+.brand img{width:34px;height:34px;border-radius:50%}
 nav a{margin-left:22px;text-decoration:none;color:var(--cacao);font-size:.95rem}
 nav a.cta{background:var(--ink);color:var(--cream);padding:9px 16px;border-radius:999px}
 @media(max-width:640px){nav a:not(.cta){display:none}}
@@ -54,8 +56,8 @@ nav a.cta{background:var(--ink);color:var(--cream);padding:9px 16px;border-radiu
 .phone{background:#0b141a;border-radius:34px;padding:14px;box-shadow:0 24px 60px rgba(36,19,9,.25);max-width:380px;margin:0 auto;width:100%}
 .phone .screen{background:#efe7dc url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" opacity=".04"%3E%3Cpath d="M20 20h40v40H20z" fill="none" stroke="%23241309"/%3E%3C/svg%3E');border-radius:24px;overflow:hidden}
 .wa-top{background:#075e54;color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:.9rem}
-.wa-top .avatar{width:34px;height:34px;border-radius:50%;background:var(--beak);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.wa-top .avatar svg{width:24px;height:24px}
+.wa-top .avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.wa-top .avatar img{width:100%;height:100%;display:block}
 .wa-top small{display:block;opacity:.8;font-size:.72rem}
 .chat{padding:14px 12px 18px;display:flex;flex-direction:column;gap:9px;font-size:.84rem}
 .msg{max-width:84%;padding:8px 11px;border-radius:12px;position:relative;box-shadow:0 1px 1px rgba(0,0,0,.08)}
@@ -132,7 +134,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 <header>
   <div class="wrap">
     <a class="brand" href="#">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#241309"/><path d="M18 28c0-8 6-14 14-14 5 0 8 2 8 2l18 8-18 10s-4 8-14 8c-6 0-8-4-8-4z" fill="#e8912d"/><path d="M40 16l18 8-18 10z" fill="#c86f1b"/><circle cx="26" cy="26" r="3" fill="#f7f1e5"/><circle cx="26.8" cy="26.4" r="1.3" fill="#241309"/></svg>
+      <img src="assets/don-tuco-avatar-64.png" alt="" width="34" height="34">
       Don Tuco
     </a>
     <nav>
@@ -158,17 +160,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     <div class="phone" aria-label="A real WhatsApp conversation with Don Tuco">
       <div class="screen">
         <div class="wa-top">
-          <span class="avatar"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#241309"/><path d="M18 28c0-8 6-14 14-14 5 0 8 2 8 2l18 8-18 10s-4 8-14 8c-6 0-8-4-8-4z" fill="#e8912d"/><circle cx="26" cy="26" r="3" fill="#f7f1e5"/></svg></span>
+          <span class="avatar"><img src="assets/don-tuco-avatar-64.png" alt=""></span>
           <div>Finca Montezuma<small>Don Tuco · responds in seconds</small></div>
         </div>
         <div class="chat">
           <div class="msg guest">Hola! Tienen tour de cacao el próximo sábado para 2 personas? <span class="t">15:02</span></div>
           <div class="msg tuco">¡Hola Sarah! Sí, tenemos el tour de cacao disponible. El próximo sábado es el 31 de octubre. ¿Prefieres en la mañana a las 10:00 o en la tarde a las 14:00? <span class="t">15:02 ✓✓</span></div>
-          <div class="latency">answered in 2.6 s</div>
+          <div class="latency">checked the calendar · answered in 2.6 s</div>
           <div class="msg guest">Perfect, 10am works! How do we get there? <span class="t">15:03</span></div>
           <div class="msg tuco">El sábado 31 a las 10:00 está disponible para 2 personas. El costo total es $40 USD. Llegamos en bote desde Bocas Town (45 min aprox). Si necesitas, te conectamos con capitanes de confianza. ¿Confirmo tu reserva? <span class="t">15:03 ✓✓</span></div>
           <div class="msg guest">are you a real person? <span class="t">15:04</span></div>
-          <div class="msg tuco">I'm Finca Montezuma's AI assistant — a digital toucan! 🦜 A human owner reads every booking and will be there to welcome you at the farm. <span class="t">15:04 ✓✓</span></div>
+          <div class="msg tuco">I'm Finca Montezuma's AI assistant, a digital toucan! 🦜 A human owner reads every booking and will be there to welcome you at the farm. <span class="t">15:04 ✓✓</span></div>
         </div>
       </div>
     </div>
@@ -195,7 +197,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       <h2>Meet Don Tuco</h2>
       <p class="sub">A toucan has worked the treetops of Bocas longer than anyone has run tours here. Don Tuco is the one who put on a jacket. He greets every guest the way a good innkeeper does, and he never loses the ledger.</p>
       <ul class="manners">
-        <li>Answers in the guest's language — Spanish, English, Dutch, and whatever comes next.</li>
+        <li>Answers in the guest's language: Spanish, English, Dutch, and whatever comes next.</li>
+        <li>Checks the calendar before he offers a slot. If 10:00 is taken, he says so and offers 14:00.</li>
         <li>Writes every reservation in the ledger before he promises it, never after.</li>
         <li>Says plainly that he's an AI when a guest asks, and that a human reads every booking.</li>
         <li>Hands the chat to the owner the moment a request leaves his script: changes, complaints, anything that needs a person.</li>
