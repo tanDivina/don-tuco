@@ -45,7 +45,7 @@
       }
     }
   ],
-  "standardSlots": ["10:00", "14:00"],
+  "standardSlots": ["11:00", "14:00"],
   "timezone": "America/Panama",
   "maxGroupSize": 10,
   "icalUrl": "",

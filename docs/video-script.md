@@ -17,8 +17,8 @@ Every stat on screen gets a MEASURED or BENCHMARK label (Dorien's standing rule)
 ## 0:40–1:50 — Live demo (the core 70 seconds)
 *Real phone, real WhatsApp, screen-recorded. Timer overlay showing reply latency (MEASURED).*
 
-1. Guest (Spanish): "Hola! ¿Tienen tour de cacao el sábado para 4 personas?" → Don Tuco replies in seconds, in Spanish, with a **tappable slot list** (10:00 / 14:00).
-2. Guest taps 10:00 → Don Tuco quotes: 4 × $20 = $80, asks for a name.
+1. Guest (Spanish): "Hola! ¿Tienen tour de cacao el sábado para 4 personas?" → Don Tuco replies in seconds, in Spanish, with a **tappable slot list** (11:00 / 14:00).
+2. Guest taps 11:00 → Don Tuco quotes: 4 × $20 = $80, asks for a name.
 3. Guest switches to English mid-chat: "Actually, can we do the chocolate workshop instead?" → Don Tuco follows the language switch, re-quotes 4 × $40.
 4. Guest confirms → booking recorded. *Cut to:* SES confirmation email landing in the guest's inbox; owner notification on Dorien's phone.
 5. Guest: "How do we get there?" → **location pin** drops in the chat + boat instructions.
