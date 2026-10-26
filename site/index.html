@@ -83,6 +83,15 @@ section p.sub{color:var(--cacao);max-width:40em;margin-bottom:34px}
 .card p{font-size:.94rem;color:var(--cacao)}
 .card .num{font-family:'Fraunces',serif;color:var(--beak-deep);font-weight:700;font-size:1rem;display:block;margin-bottom:8px}
 
+/* meet */
+.meet .wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:center}
+@media(max-width:820px){.meet .wrap{grid-template-columns:1fr;max-width:520px}}
+.meet .portrait{margin:0;border-radius:20px;overflow:hidden;border:1px solid var(--rule);box-shadow:0 18px 44px rgba(36,19,9,.14);background:#f3ead7}
+.meet .portrait video,.meet .portrait img{display:block;width:100%;height:auto}
+.meet .manners{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.meet .manners li{padding-left:20px;position:relative;color:var(--cacao);font-size:.96rem}
+.meet .manners li::before{content:"";position:absolute;left:0;top:.52em;width:9px;height:9px;border-radius:50%;background:var(--beak)}
+
 /* wedge */
 .wedge{background:var(--cream-deep)}
 .wedge blockquote{font-family:'Fraunces',serif;font-size:clamp(1.25rem,2.6vw,1.7rem);max-width:30em;font-weight:600;margin:0 0 18px}
@@ -175,6 +184,25 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     <div class="note">*Measured Oct 2026 on the production agent (Claude on Amazon Bedrock), logged per message to CloudWatch.</div>
   </div>
 </div>
+
+<section class="meet" id="meet">
+  <div class="wrap">
+    <figure class="portrait">
+      <video src="assets/don-tuco-animated.mp4" poster="assets/don-tuco-hero.jpg" autoplay muted loop playsinline aria-label="Don Tuco, the toucan host, blinking and tilting his head in welcome"></video>
+    </figure>
+    <div>
+      <span class="kicker">The host</span>
+      <h2>Meet Don Tuco</h2>
+      <p class="sub">A toucan has worked the treetops of Bocas longer than anyone has run tours here. Don Tuco is the one who put on a jacket. He greets every guest the way a good innkeeper does, and he never loses the ledger.</p>
+      <ul class="manners">
+        <li>Answers in the guest's language — Spanish, English, Dutch, and whatever comes next.</li>
+        <li>Writes every reservation in the ledger before he promises it, never after.</li>
+        <li>Says plainly that he's an AI when a guest asks, and that a human reads every booking.</li>
+        <li>Hands the chat to the owner the moment a request leaves his script: changes, complaints, anything that needs a person.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
 <section class="wedge" id="why">
   <div class="wrap">
