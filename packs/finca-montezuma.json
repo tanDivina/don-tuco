@@ -1,0 +1,66 @@
+{
+  "operatorId": "finca-montezuma",
+  "businessName": "Finca Montezuma",
+  "location": {
+    "description": "Finca Montezuma, Dolphin Bay, Bocas del Toro, Panamá",
+    "latitude": 9.2419,
+    "longitude": -82.2708,
+    "arrivalNotes": "Reachable by boat from Bocas Town or Almirante. We can help arrange a boat — just ask."
+  },
+  "languages": ["es", "en", "nl"],
+  "defaultLanguage": "es",
+  "currency": "USD",
+  "tours": [
+    {
+      "id": "tasting",
+      "name": { "en": "Cacao Tasting Tour", "es": "Tour de Degustación de Cacao", "nl": "Cacao Proeverij Tour" },
+      "durationMinutes": 120,
+      "pricePerPerson": 20,
+      "description": {
+        "en": "Walk the cacao grove, see the harvest and fermentation, and taste 100% cacao paste straight from the farm.",
+        "es": "Recorre el cacaotal, conoce la cosecha y fermentación, y degusta pasta de cacao 100% directa de la finca.",
+        "nl": "Wandel door de cacaotuin, zie de oogst en fermentatie, en proef 100% cacaopasta rechtstreeks van de finca."
+      }
+    },
+    {
+      "id": "workshop",
+      "name": { "en": "Chocolate Workshop & Tasting", "es": "Taller de Chocolate y Degustación", "nl": "Chocolade Workshop & Proeverij" },
+      "durationMinutes": 180,
+      "pricePerPerson": 40,
+      "description": {
+        "en": "Hands-on bean-to-bar workshop: roast, grind, and mold your own chocolate, plus the full tasting.",
+        "es": "Taller práctico del grano a la barra: tuesta, muele y moldea tu propio chocolate, más la degustación completa.",
+        "nl": "Hands-on bean-to-bar workshop: brand, maal en giet je eigen chocolade, plus de volledige proeverij."
+      }
+    },
+    {
+      "id": "custom",
+      "name": { "en": "Custom Tour", "es": "Tour Personalizado", "nl": "Tour op Maat" },
+      "durationMinutes": 120,
+      "pricePerPerson": 30,
+      "description": {
+        "en": "Tell us what you'd like to see — birds, the jungle trail, the chocolate kitchen — and we build the visit around it.",
+        "es": "Cuéntanos qué te gustaría ver — aves, el sendero de selva, la cocina de chocolate — y armamos la visita a tu medida.",
+        "nl": "Vertel ons wat je wilt zien — vogels, het junglepad, de chocoladekeuken — en we stellen het bezoek daarop samen."
+      }
+    }
+  ],
+  "standardSlots": ["10:00", "14:00"],
+  "timezone": "America/Panama",
+  "maxGroupSize": 10,
+  "icalUrl": "",
+  "faq": [
+    { "q": "What should I bring?", "a": "Closed shoes or rubber boots, insect repellent, water, and rain gear — this is rainforest. We provide everything for the tastings." },
+    { "q": "Is it kid-friendly?", "a": "Yes — kids love the chocolate workshop. Children under 6 join free on the tasting tour." },
+    { "q": "How do I pay?", "a": "Cash (USD) at the farm, or we can send a payment link for groups of 5+." },
+    { "q": "Is the cacao ceremonial?", "a": "We don't use that label. It is 100% pure cacao paste, grown, fermented, and stone-ground here at the farm." },
+    { "q": "How do I get there?", "a": "By boat from Bocas Town (about 45 min) or Almirante. We can connect you with trusted boat captains — ask us." }
+  ],
+  "escalation": {
+    "note": "Human owner reachable via WhatsApp; Don Tuco hands off for complaints, pricing exceptions, groups over maxGroupSize, or anything he is unsure about."
+  },
+  "email": {
+    "fromAddress": "bookings@hero-apps.com",
+    "ownerNotify": "dorien.vda@gmail.com"
+  }
+}

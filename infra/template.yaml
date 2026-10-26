@@ -1,0 +1,122 @@
+# CloudFormation template for Don Tuco (same deploy pattern as Lucienne:
+# `scripts/deploy.sh` runs cloudformation deploy, then uploads the code zip).
+# After deploy: in the AWS End User Messaging Social console, link the WABA
+# (Meta embedded signup) and set the InboundTopic as the event destination.
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Don Tuco — WhatsApp booking concierge (EUM Social + Bedrock + SES)
+
+Parameters:
+  WhatsAppPhoneNumberId:
+    Type: String
+    Default: ""
+    Description: EUM Social origination phone number id (set after WABA signup)
+  OperatorPack:
+    Type: String
+    Default: finca-montezuma
+  ModelId:
+    Type: String
+    # Opus 5.5 / current-gen agreements accepted Oct 25 2026 but invocation is
+    # sales-gated for this account; Sonnet 4.5 is granted and smoke-tested.
+    Default: us.anthropic.claude-sonnet-4-5-20250929-v1:0
+
+Resources:
+  InboundTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: don-tuco-whatsapp-inbound
+
+  ConversationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: don-tuco-conversations
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: waId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: waId, KeyType: HASH }
+      TimeToLiveSpecification: { AttributeName: ttl, Enabled: true }
+
+  BookingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: don-tuco-bookings
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: operatorId, AttributeType: S }
+        - { AttributeName: sk, AttributeType: S }
+      KeySchema:
+        - { AttributeName: operatorId, KeyType: HASH }
+        - { AttributeName: sk, KeyType: RANGE }
+
+  AgentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: don-tuco-agent
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Query"]
+                Resource:
+                  - !GetAtt ConversationsTable.Arn
+                  - !GetAtt BookingsTable.Arn
+              - Effect: Allow
+                Action: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"]
+                Resource: "*"
+              - Effect: Allow
+                Action: ["social-messaging:SendWhatsAppMessage", "social-messaging:PostWhatsAppMessageMedia"]
+                Resource: "*"
+              - Effect: Allow
+                Action: ["ses:SendEmail"]
+                Resource: "*"
+
+  AgentFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: don-tuco-agent
+      Runtime: nodejs22.x
+      Handler: src/handler.handler
+      Role: !GetAtt AgentRole.Arn
+      Timeout: 120
+      MemorySize: 512
+      Code:
+        # Placeholder; scripts/deploy.sh uploads the real zip right after.
+        ZipFile: "exports.handler = async () => ({ placeholder: true });"
+      Environment:
+        Variables:
+          CONVERSATIONS_TABLE: !Ref ConversationsTable
+          BOOKINGS_TABLE: !Ref BookingsTable
+          WHATSAPP_PHONE_NUMBER_ID: !Ref WhatsAppPhoneNumberId
+          OPERATOR_PACK: !Ref OperatorPack
+          MODEL_ID: !Ref ModelId
+
+  InboundSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref InboundTopic
+      Protocol: lambda
+      Endpoint: !GetAtt AgentFunction.Arn
+
+  InboundInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AgentFunction
+      Action: lambda:InvokeFunction
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref InboundTopic
+
+Outputs:
+  InboundTopicArn:
+    Value: !Ref InboundTopic
+    Description: Set this as the EUM Social event destination for the WABA
+  FunctionName:
+    Value: !Ref AgentFunction

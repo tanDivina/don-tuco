@@ -1,0 +1,18 @@
+{
+  "name": "don-tuco",
+  "version": "0.1.0",
+  "description": "Don Tuco — the WhatsApp host for tour operators. Agentic booking concierge on AWS End User Messaging Social + Bedrock + SES.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "chat": "node cli/chat.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@anthropic-ai/bedrock-sdk": "^1.1.0",
+    "@aws-sdk/client-dynamodb": "^3.700.0",
+    "@aws-sdk/client-sesv2": "^3.700.0",
+    "@aws-sdk/client-socialmessaging": "^3.700.0",
+    "@aws-sdk/lib-dynamodb": "^3.700.0"
+  }
+}
