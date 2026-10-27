@@ -44,9 +44,21 @@ AWS End User Messaging Social is not a channel bolted onto this product — it *
 Wording rules (Oct 27 2026):
 - Don Tuco sends text, lists, buttons and location pins, but NO voice notes (that is
   Lucienne). Do not claim voice for him; voice-note understanding stays in "What's next".
-- Do NOT claim a cost multiple vs. Meta's own Business Agent (billed per token, Meta
-  estimates ~4 to 5 cents per message). Our estimate is ~1 cent WhatsApp + 1 to 3 cents
-  Bedrock per reply; only quote a number after measuring it from the AWS bill.
+- Do NOT claim a big cost multiple vs. Meta's own Business Agent (billed per token,
+  Meta estimates ~4 to 5 cents per message); ours is roughly half of that.
+
+### Measured cost per reply (Oct 27 2026)
+Local harness on the live agent code + Bedrock (Claude Sonnet 4.5), finca-montezuma pack:
+| Turn | Bedrock calls | Tokens in/out | AI cost |
+|---|---|---|---|
+| "What tours do you have?" | 1 | 2,397 / 201 | $0.010 |
+| "Space for 2 this Saturday?" | 1 | 2,612 / 56 | $0.009 |
+| "How much would that be?" | 1 | 2,677 / 95 | $0.010 |
+3 days of CloudWatch agree (~2.6k input tokens per call). At list prices: AI ~1 cent +
+AWS EUM ~0.5 cent per message each way = **about 2 cents per reply**. AWS bill so far:
+Meta labeled the replies "Service_Free_Customer_Service" ($0).
+Safe Devpost line: "Measured on the live agent: about 1 cent of AI per reply, and about
+2 cents all-in at list prices including WhatsApp delivery."
 - Since Oct 1 2026 Meta charges per message for service replies inside the 24h window,
   so do not say replies inside the window are free. The Prize statement above says
   "free-form session messages", which is about no template approval, not price: fine.
