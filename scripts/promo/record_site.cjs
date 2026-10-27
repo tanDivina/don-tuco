@@ -134,11 +134,11 @@ async function main() {
   await scene('numbers', len('n_numbers', 1.2), async (now) => {
     await page.evaluate(() => {
       const st = document.querySelectorAll('.stats .stat');
-      st[0].querySelector('.n').textContent = '3.8 s';
-      st[0].querySelector('.l').textContent = 'median reply, 14 live WhatsApp replies (CloudWatch)';
+      st[0].querySelector('.n').textContent = '8 s';
+      st[0].querySelector('.l').textContent = 'median from guest message to reply, 14 live WhatsApp replies (CloudWatch)';
       st[1].querySelector('.n').textContent = '~2¢';
       st[1].querySelector('.l').textContent = 'per reply, all in: Bedrock plus WhatsApp delivery, at list prices';
-      document.querySelector('.stats .note').textContent = 'Measured Oct 22 to 27, 2026 on the production agent (Claude on Amazon Bedrock).';
+      document.querySelector('.stats .note').textContent = 'Measured Oct 26 to 27, 2026 on the production agent (Claude on Amazon Bedrock).';
     });
     await scrollTo(await topOf('.stats', 330), 1400);
   });
