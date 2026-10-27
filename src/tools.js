@@ -2,6 +2,7 @@
 // backed by DynamoDB (or an in-memory store when running the local CLI).
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { calendarEnabled, blockedSlots, upsertBookingEvent } from "./gcal.js";
 
 const BOOKINGS_TABLE = process.env.BOOKINGS_TABLE || "";
 const ddb = BOOKINGS_TABLE
@@ -20,6 +21,7 @@ export function makeTools(pack) {
         properties: {
           date: { type: "string", description: "ISO date, e.g. 2026-10-31" },
           time: { type: "string", description: `Slot time HH:MM, normally one of ${pack.standardSlots.join(", ")}` },
+          tourId: { type: "string", description: "Tour id if known; longer tours need a longer free window" },
         },
         required: ["date", "time"],
       },
@@ -109,7 +111,17 @@ export async function executeTool(pack, name, input, ctx) {
     case "check_availability": {
       const dayBookings = await listBookings(pack.operatorId, input.date);
       const taken = new Set(dayBookings.map((b) => b.time));
-      // TODO: also merge busy blocks from pack.icalUrl once the calendar URL is set.
+      // The operator's own calendar events (private groups, days off) block slots too.
+      if (calendarEnabled()) {
+        const tour = pack.tours.find((t) => t.id === input.tourId);
+        const minutes = tour?.durationMinutes || Math.max(...pack.tours.map((t) => t.durationMinutes));
+        try {
+          const slots = [...new Set([...pack.standardSlots, input.time])];
+          for (const s of await blockedSlots(pack, input.date, slots, minutes)) taken.add(s);
+        } catch (err) {
+          console.error("calendar availability check failed, using bookings only:", err.message);
+        }
+      }
       const mine = dayBookings.find((b) => b.time === input.time && b.waId === ctx.waId);
       if (mine) {
         return {
@@ -145,6 +157,15 @@ export async function executeTool(pack, name, input, ctx) {
       if (foreign && !own) {
         return { booked: false, reason: "that slot is held by another guest's booking; offer an alternative" };
       }
+      if (!own && calendarEnabled()) {
+        const tour = pack.tours.find((t) => t.id === input.tourId);
+        try {
+          const blocked = await blockedSlots(pack, input.date, [input.time], tour?.durationMinutes || 120);
+          if (blocked.length) return { booked: false, reason: "the operator's calendar is busy at that time; offer an alternative" };
+        } catch (err) {
+          console.error("calendar check before booking failed:", err.message);
+        }
+      }
 
       // Re-booking the guest's own slot is an update (e.g. adding an email), never a conflict.
       const booking = own
@@ -164,6 +185,14 @@ export async function executeTool(pack, name, input, ctx) {
             channel: "whatsapp",
             waId: ctx.waId,
           };
+      // Put it in the operator's Google Calendar; a calendar hiccup never un-books a guest.
+      if (calendarEnabled()) {
+        try {
+          booking.calendarEventId = await upsertBookingEvent(pack, booking);
+        } catch (err) {
+          console.error("calendar event failed:", err.message);
+        }
+      }
       await saveBooking(booking);
 
       // Email problems must never un-book a guest: report them, don't throw.

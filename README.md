@@ -46,6 +46,7 @@ flowchart LR
 - **Agent**: a Claude tool-use loop on Bedrock with six tools: `check_availability`, `quote_tour`, `book_tour`, `get_my_bookings`, `send_location`, `escalate`. Bookings and the 24h conversation state live in DynamoDB (TTL matches Meta's customer-service window).
 - **Outbound**: `SendWhatsAppMessage` passes native Meta JSON: free-form text, tappable slot lists, and the farm's location pin.
 - **Owner relay**: an escalation reaches the owner on WhatsApp. The owner answers in that chat and Don Tuco passes the message to the guest from the business number, then stays quiet for that guest until the owner sends `#bot`. `#+<number> text` writes to any guest. Outside Meta's 24h window the alert goes out as the approved utility template `don_tuco_handoff` (`infra/whatsapp-template-handoff.json`); the owner's reply reopens the window. Set `owner.whatsapp` in the pack, or the `OWNER_WHATSAPP` Lambda environment variable to keep a personal number out of the repo, to turn it on.
+- **Google Calendar (optional)**: with `GOOGLE_CALENDAR_ID` + `GOOGLE_SA_KEY` set, events the operator adds block overlapping slots (tour duration aware) and every booking is written to the calendar as an event, tagged so Don Tuco does not block himself. Calendar errors never block or undo a booking.
 - **SES**: guest confirmation email + owner notifications/escalations (the email backup includes a tap-to-chat link).
 - **Honesty by design**: Don Tuco discloses he's an AI when asked, and escalates complaints, price exceptions, and oversized groups to a human.
 

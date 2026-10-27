@@ -8,6 +8,8 @@ STACK="${1:-don-tuco}"
 REGION="${AWS_REGION:-us-east-1}"
 PHONE_ID="${WHATSAPP_PHONE_NUMBER_ID:-}"
 OWNER="${OWNER_WHATSAPP:-}"
+CAL_ID="${GOOGLE_CALENDAR_ID:-}"
+SA_KEY="${GOOGLE_SA_KEY:-}"
 MODEL="${MODEL_ID:-us.anthropic.claude-sonnet-4-5-20250929-v1:0}"
 
 echo "==> Deploying stack '$STACK' in $REGION"
@@ -19,6 +21,8 @@ aws cloudformation deploy \
   --parameter-overrides \
     WhatsAppPhoneNumberId="$PHONE_ID" \
     OwnerWhatsApp="$OWNER" \
+    GoogleCalendarId="$CAL_ID" \
+    GoogleSaKey="$SA_KEY" \
     ModelId="$MODEL"
 
 echo "==> Packaging Lambda code"
