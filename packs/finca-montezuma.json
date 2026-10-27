@@ -5,7 +5,7 @@
     "description": "Finca Montezuma, Dolphin Bay, Bocas del Toro, Panamá",
     "latitude": 9.2419,
     "longitude": -82.2708,
-    "arrivalNotes": "Reachable by boat from Bocas Town or Almirante. We can help arrange a boat — just ask."
+    "arrivalNotes": "Reachable by boat from Bocas Town or Almirante, a 25 to 30 minute ride. We can help arrange a boat, just ask."
   },
   "languages": [
     "es",
@@ -87,7 +87,7 @@
     },
     {
       "q": "How do I get there?",
-      "a": "By boat from Bocas Town (about 45 min) or Almirante. We can connect you with trusted boat captains — ask us."
+      "a": "By boat from Bocas Town or Almirante, about 25 to 30 minutes. We can connect you with trusted boat captains, just ask us."
     }
   ],
   "escalation": {
