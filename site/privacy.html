@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy Policy · Don Tuco</title>
-<meta name="description" content="Privacy Policy and Transactional Data Handling for Don Tuco — WhatsApp host and concierge for tour operators.">
+<meta name="description" content="How Don Tuco, the WhatsApp booking assistant for tour operators, handles guest data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -43,62 +43,58 @@ footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-si
   <p><em>Effective Date: October 27, 2026</em></p>
 
   <p>
-    <strong>Don Tuco</strong> is an AI-powered conversational concierge and booking assistant for tour and hospitality operators (such as Finca Montezuma in Bocas del Toro, Panama). Don Tuco is operated by <strong>Divina Endeavors LLC</strong>, doing business as <strong>Hero Apps</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;).
+    <strong>Don Tuco</strong> is an AI booking assistant that answers WhatsApp messages for tour operators. Our first operator is Finca Montezuma, a cacao farm in Dolphin Bay, Bocas del Toro, Panama. Don Tuco is run by <strong>Divina Endeavors LLC</strong> (Hero Apps, &ldquo;we&rdquo;). This page explains what we collect and what we do with it.
   </p>
 
   <div class="callout">
-    <strong>Transactional Integrity Promise:</strong>
-    Don Tuco handles only strictly transactional communications. We never sell, monetize, or rent guest or operator contact data. We never send unsolicited bulk marketing or third-party advertising.
+    <strong>In short</strong>
+    We only use your details to answer you and handle your booking. We do not sell them, share them for advertising, or send marketing email.
   </div>
 
-  <h2>1. Scope &amp; How Data Is Collected</h2>
-  <p>We receive information only when a guest or business operator voluntarily interacts with Don Tuco:</p>
+  <h2>1. What we collect</h2>
   <ul>
-    <li><strong>WhatsApp Conversational Data:</strong> When a prospective guest reaches out to an operator's verified WhatsApp business number, inbound messages are processed to answer tour availability, pricing, directions, and schedule bookings.</li>
-    <li><strong>Booking Contact Details:</strong> When a guest confirms a tour, they provide their full name, phone number, and email address specifically to receive their calendar invitation, directions, and booking voucher.</li>
-    <li><strong>Operator Waitlist &amp; Setup Requests:</strong> Tour operators who sign up on our website provide their name, business email, and tour description so our human onboarding team can assist with configuration.</li>
+    <li><strong>Your WhatsApp messages</strong> to an operator's Don Tuco number, with your WhatsApp number and profile name. We use them to answer questions about tours, availability, prices and directions.</li>
+    <li><strong>Booking details</strong> you give when you book: your name, the tour, date, time and group size. Your email address only if you choose to give it for a confirmation.</li>
+    <li><strong>Operator waitlist sign-ups</strong> on this website: the email address and details you type into the form.</li>
   </ul>
 
-  <h2>2. How We Use Transactional Email (Amazon SES)</h2>
-  <p>Our email infrastructure runs on Amazon Simple Email Service (SES) with messages sent from verified addresses on <code>hero-apps.com</code> and <code>dontuco.hero-apps.com</code>. We send strictly transactional emails for the following operational triggers:</p>
+  <h2>2. Who sees it</h2>
   <ul>
-    <li><strong>Guest Booking Confirmations:</strong> Digital vouchers containing arrival time, meeting point, cacao tour instructions, and payment receipts.</li>
-    <li><strong>Operator Internal Alerts:</strong> Immediate dispatch to the local tour guide or farm manager notifying them of a newly confirmed party.</li>
-    <li><strong>Setup Inquiries:</strong> Direct response from our support team to operators who requested Don Tuco for their business.</li>
+    <li><strong>The tour operator</strong> you contacted. They get each booking, and the conversation when Don Tuco hands you over to a person.</li>
+    <li><strong>The AI.</strong> Don Tuco is an AI assistant built on Amazon Bedrock. He tells you so if you ask. Your messages are processed to write his replies and are not used to train models.</li>
   </ul>
 
-  <h2>3. Bounce, Complaint &amp; Suppression Management</h2>
+  <h2>3. Email</h2>
   <p>
-    We maintain strict deliverability standards. Bounces and complaints are monitored programmatically via Amazon SNS and CloudWatch alarms. If a recipient's address bounces or marks a message as spam, that address is immediately suppressed and removed from all future automated sends.
-  </p>
-
-  <h2>4. Cloud Infrastructure &amp; Third-Party Processors</h2>
-  <p>Don Tuco runs entirely on audited enterprise cloud infrastructure:</p>
-  <ul>
-    <li><strong>Amazon Web Services (AWS):</strong> Compute (AWS Lambda), agent orchestration (Amazon Bedrock), transactional email delivery (Amazon SES), and conversational messaging (AWS End User Messaging Social).</li>
-    <li><strong>Vercel:</strong> Secure static hosting and SSL termination for <code>dontuco.hero-apps.com</code>.</li>
-    <li><strong>Meta / WhatsApp Cloud API:</strong> Secure end-to-end messaging transport between guests and business phone numbers.</li>
-  </ul>
-
-  <h2>5. Data Retention &amp; Rights (GDPR &amp; CCPA)</h2>
-  <p>
-    Under the General Data Protection Regulation (GDPR), California Consumer Privacy Act (CCPA), and applicable international privacy frameworks, guests and operators retain full control over their personal information. You have the right to:
-  </p>
-  <ul>
-    <li>Request a copy of all stored conversation transcripts and booking records.</li>
-    <li>Request immediate and permanent deletion of your contact details from our active ledgers and databases.</li>
-    <li>Opt out of any further communication at any time by texting <code>STOP</code> in WhatsApp or emailing our support desk.</li>
-  </ul>
-
-  <h2>6. Contact Us</h2>
-  <p>
-    For any questions regarding this Privacy Policy, your booking data, or to request data erasure, please contact:
+    We send email through Amazon Simple Email Service (SES), and only in two cases: a booking confirmation to a guest who asked for one (tour, date, time, number of guests and total price, paid at the farm), and a notice to the operator about a new booking or a guest who needs a person. We never send newsletters or marketing.
   </p>
   <p>
-    <strong>Divina Endeavors LLC (Hero Apps)</strong><br>
-    Bocas del Toro, Republic of Panama<br>
-    Email: <a href="mailto:support@hero-apps.com">support@hero-apps.com</a><br>
-    Direct Alliance Lead: <a href="mailto:dorien@hero-apps.com">dorien@hero-apps.com</a>
+    If an address bounces or a recipient marks a message as spam, Amazon SES adds it to our account suppression list automatically and we stop sending to it.
+  </p>
+
+  <h2>4. How long we keep it</h2>
+  <ul>
+    <li><strong>Conversations:</strong> deleted automatically 24 hours after the last message.</li>
+    <li><strong>Bookings:</strong> kept for the operator's records until you or the operator ask us to delete them.</li>
+    <li><strong>Waitlist sign-ups:</strong> kept until you ask us to remove them.</li>
+  </ul>
+
+  <h2>5. Where it is processed</h2>
+  <ul>
+    <li><strong>Amazon Web Services</strong> (United States): WhatsApp delivery through AWS End User Messaging Social, AWS Lambda, Amazon Bedrock, Amazon DynamoDB and Amazon SES.</li>
+    <li><strong>Meta (WhatsApp)</strong> carries the messages between you and the business number. Messages to a business account are handled by Meta and AWS on our behalf, under <a href="https://www.whatsapp.com/legal/business-terms">WhatsApp's business terms</a>.</li>
+    <li><strong>Vercel</strong> hosts this website. <strong>Google Firebase</strong> stores waitlist sign-ups.</li>
+  </ul>
+
+  <h2>6. Your rights</h2>
+  <p>
+    You can ask for a copy of what we hold about you, ask us to correct it, or ask us to delete it. Email us at the address below and we will answer within 30 days. If you do not want Don Tuco to answer you, just stop messaging the number; we only write to guests who have written to us.
+  </p>
+
+  <h2>7. Contact</h2>
+  <p>
+    Divina Endeavors LLC (Hero Apps), Bocas del Toro, Panama<br>
+    Email: <a href="mailto:dorien@hero-apps.com">dorien@hero-apps.com</a>
   </p>
 
   <footer>
