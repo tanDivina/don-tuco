@@ -1,4 +1,4 @@
-# Don Tuco 🦜, the WhatsApp host for tour operators
+# Don Tuco, the WhatsApp host for tour operators
 
 **Every guest greeted in seconds, every booking in the ledger.**
 

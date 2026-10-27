@@ -18,7 +18,7 @@ const ctx = {
 
 const rl = createInterface({ input: process.stdin, output: process.stdout });
 let messages = [];
-console.log(`🦜 Don Tuco local chat — pack: ${pack.businessName}. Ctrl+C to quit.\n`);
+console.log(`Don Tuco local chat — pack: ${pack.businessName}. Ctrl+C to quit.\n`);
 
 for (;;) {
   const line = (await rl.question("guest> ")).trim();
@@ -30,5 +30,5 @@ for (;;) {
   const t0 = Date.now();
   const res = await runAgent(pack, messages, ctx);
   messages = res.messages;
-  console.log(`\n🦜 Don Tuco (${((Date.now() - t0) / 1000).toFixed(1)}s): ${res.reply}\n`);
+  console.log(`\nDon Tuco (${((Date.now() - t0) / 1000).toFixed(1)}s): ${res.reply}\n`);
 }
