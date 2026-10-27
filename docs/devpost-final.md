@@ -17,7 +17,8 @@ Our first customer, Finca Montezuma, is a cacao farm in Dolphin Bay, Bocas del T
 Don Tuco is the toucan host of the farm, living on the operator's WhatsApp Business number. He:
 
 - answers in the guest's language (Spanish, English, Dutch)
-- checks real availability in the booking ledger and never double-books
+- checks real availability against the booking ledger and the operator's Google Calendar, and never double-books
+- writes every booking into the operator's Google Calendar, so the owner sees the day at a glance
 - quotes the total price and books only after the guest confirms
 - looks up a guest's existing booking from the ledger, not from chat memory
 - sends the farm's location pin and plans the boat ride (25 to 30 minutes from Bocas Town)
@@ -35,6 +36,7 @@ The agent engine knows nothing about cacao. Tours, prices, time slots, languages
 - **AWS Lambda (Node 22)** runs a Claude tool-use loop on **Amazon Bedrock** with six tools: `check_availability`, `quote_tour`, `book_tour`, `get_my_bookings`, `send_location`, `escalate`.
 - **Amazon DynamoDB** holds the booking ledger and 24-hour conversation state (TTL matches Meta's customer-service window), plus owner handoff state.
 - **Amazon SES** sends guest confirmations and owner alerts.
+- **Google Calendar API** (service account, signed with node:crypto, no extra dependencies): the operator's own events block overlapping slots, tour length included, and each booking becomes a calendar event. A calendar outage never blocks a booking.
 - **Amazon CloudWatch** records reply latency as an embedded metric on every message.
 - Infrastructure is one CloudFormation template.
 
@@ -56,7 +58,7 @@ A real guest can message the live number today, get an answer in seconds, book, 
 On WhatsApp the hard part is not the language model, it is the honesty around it: never inventing availability, never promising what the tools did not do, and getting a human in fast.
 
 ## What's next for Don Tuco
-Day-before reminder templates, payment links for larger groups, voice-note understanding, an iCal sync with the operator's existing calendar, and onboarding the next Bocas del Toro operators from our pipeline (Barefoot, Travel Twitch, Herbivore).
+Day-before reminder templates, payment links for larger groups, voice-note understanding, cancellations that clear the calendar event, and onboarding the next Bocas del Toro operators from our pipeline (Barefoot, Travel Twitch, Herbivore).
 
 ## Built with
 amazon-web-services, aws-end-user-messaging, amazon-bedrock, claude, aws-lambda, amazon-dynamodb, amazon-ses, amazon-sns, amazon-cloudwatch, aws-cloudformation, node.js, whatsapp
