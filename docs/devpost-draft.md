@@ -34,6 +34,23 @@ AWS End User Messaging Social (WhatsApp) → SNS → Lambda (Node 22) running a 
 ## Meta WhatsApp Prize statement
 AWS End User Messaging Social is not a channel bolted onto this product — it *is* the product. Don Tuco exists entirely inside WhatsApp, the app Latin American guests already use, with EUM Social as both event source (webhook entries via SNS) and reply API (free-form session messages inside the 24-hour window, so no template-approval dependency; reminder templates are the roadmap).
 
+## What makes it different (safe wording, no em dashes)
+> **Pay per use, owned by the operator.** Don Tuco runs on AWS End User Messaging
+> Social and Amazon Bedrock, billed per message and per reply. There is no monthly
+> chatbot platform fee, and the agent, its tour pack and every booking live in the
+> operator's own AWS account, not in a third-party inbox. It does more than chat:
+> he checks real availability, records bookings and emails confirmations.
+
+Wording rules (Oct 27 2026):
+- Don Tuco sends text, lists, buttons and location pins, but NO voice notes (that is
+  Lucienne). Do not claim voice for him; voice-note understanding stays in "What's next".
+- Do NOT claim a cost multiple vs. Meta's own Business Agent (billed per token, Meta
+  estimates ~4 to 5 cents per message). Our estimate is ~1 cent WhatsApp + 1 to 3 cents
+  Bedrock per reply; only quote a number after measuring it from the AWS bill.
+- Since Oct 1 2026 Meta charges per message for service replies inside the 24h window,
+  so do not say replies inside the window are free. The Prize statement above says
+  "free-form session messages", which is about no template approval, not price: fine.
+
 ## What's next
 Day-before reminder templates (Meta utility templates), payment links for large groups, voice-note understanding, and onboarding the next operators from the pipeline.
 
