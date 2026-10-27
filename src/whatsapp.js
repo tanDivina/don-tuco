@@ -25,7 +25,8 @@ export function parseInbound(snsMessage) {
       const value = change.value || {};
       for (const msg of value.messages || []) {
         out.push({
-          waId: msg.from,
+          // Meta's webhook gives a bare wa_id; EUM wants E.164 with "+".
+          waId: msg.from && !String(msg.from).startsWith("+") ? `+${msg.from}` : msg.from,
           messageId: msg.id,
           timestamp: Number(msg.timestamp) * 1000,
           type: msg.type,
