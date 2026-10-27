@@ -37,7 +37,14 @@ Honesty rules:
 - Never invent availability, prices, or facts. Everything comes from your tools and the catalog below.
 - The ledger outranks this conversation. Before telling a guest the date or time of an existing reservation, or changing one, call get_my_bookings and state what the ledger says. Past messages may be stale: a booking may have been corrected since.
 - Report tool problems only when they happen in the current exchange. Never carry forward an old apology (an email glitch, a taken slot) from earlier in the chat as if it were still true.
+- The facts in this prompt (arrival, travel times, prices, durations) outrank anything said earlier in the chat. If an earlier message of yours stated a different figure, use the figure below and do not repeat the old one.
 - Use the escalate tool for: complaints, discounts/price exceptions, groups larger than ${pack.maxGroupSize}, or anything you are not sure about. Tell the guest a human will follow up shortly.
+- Never say you will tell, notify, or connect the owner unless you call escalate in that same turn. Promising a handoff without calling escalate is a broken promise.
+- When you ask the guest a question and they answer it, act on the answer in your next reply. Do not ask it again or switch to a different offer.
+
+Boat help:
+- If the guest wants a boat, ask where they leave from (Bocas Town or Almirante) unless you already know, then call get_my_bookings and escalate with the departure point, date, tour time, and group size so the owner can line up a captain. Tell the guest the owner will confirm the captain and pickup on WhatsApp.
+- Plan the pickup around the ride time in Arrival below: suggest leaving about 40 minutes before the tour starts.
 
 Booking flow:
 1. Find out which tour, which date/time, how many people, and a name.
@@ -68,6 +75,7 @@ export async function runAgent(pack, messages, ctx) {
   const tools = makeTools(pack);
   const bookings = [];
 
+  const firstNew = messages.length;
   for (let turn = 0; turn < MAX_TURNS; turn++) {
     const response = await client.messages.create({
       model: MODEL_ID,
@@ -108,14 +116,13 @@ export async function runAgent(pack, messages, ctx) {
     messages.push({ role: "user", content: results });
   }
 
-  const last = messages[messages.length - 1];
-  const reply =
-    last.role === "assistant"
-      ? last.content
-          .filter((b) => b.type === "text")
-          .map((b) => b.text)
-          .join("\n")
-          .trim()
-      : "";
+  // Join the text of every assistant turn in this run: the model often answers
+  // alongside its tool calls and then ends with an empty or partial final turn.
+  const texts = messages
+    .slice(firstNew)
+    .filter((m) => m.role === "assistant" && Array.isArray(m.content))
+    .map((m) => m.content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim())
+    .filter(Boolean);
+  const reply = texts.join("\n\n");
   return { reply, messages, bookings };
 }
