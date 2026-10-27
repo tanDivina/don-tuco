@@ -38,7 +38,7 @@ AWS End User Messaging Social is not a channel bolted onto this product — it *
 Day-before reminder templates (Meta utility templates), payment links for large groups, voice-note understanding, and onboarding the next operators from the pipeline.
 
 ## Submission checklist
-- [ ] New ACE opportunity created (net-new, after Sep 14 2026, campaign code above) — **do first, it needs approval time**
+- [x] New ACE opportunity created Oct 26 2026: **O30398370** (net-new, customer Finca Montezuma, campaign code above; pending approval)
 - [ ] Dedicated WhatsApp number acquired + Meta embedded signup in EUM console (Dorien)
 - [ ] Deploy stack, wire SNS destination, end-to-end test on real WhatsApp
 - [ ] Repo public with MIT license (or shared with judge accounts)
