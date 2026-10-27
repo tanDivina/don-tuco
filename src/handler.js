@@ -12,6 +12,8 @@ import { isOwner, ownerKey, alertOwner, handoffActive, nextHandoffUntil, parseOw
 const pack = JSON.parse(
   readFileSync(new URL(`../packs/${process.env.OPERATOR_PACK || "finca-montezuma"}.json`, import.meta.url))
 );
+// The owner's personal number stays out of the public repo: set it on the Lambda.
+if (process.env.OWNER_WHATSAPP) pack.owner = { ...pack.owner, whatsapp: process.env.OWNER_WHATSAPP };
 const CONVO_TABLE = process.env.CONVERSATIONS_TABLE;
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 

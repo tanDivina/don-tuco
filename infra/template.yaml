@@ -13,6 +13,10 @@ Parameters:
   OperatorPack:
     Type: String
     Default: finca-montezuma
+  OwnerWhatsApp:
+    Type: String
+    Default: ""
+    Description: Owner's personal WhatsApp in E.164 for the handoff relay (kept out of the repo)
   ModelId:
     Type: String
     # Opus 5.5 / current-gen agreements accepted Oct 25 2026 but invocation is
@@ -96,6 +100,7 @@ Resources:
           CONVERSATIONS_TABLE: !Ref ConversationsTable
           BOOKINGS_TABLE: !Ref BookingsTable
           WHATSAPP_PHONE_NUMBER_ID: !Ref WhatsAppPhoneNumberId
+          OWNER_WHATSAPP: !Ref OwnerWhatsApp
           OPERATOR_PACK: !Ref OperatorPack
           MODEL_ID: !Ref ModelId
 
