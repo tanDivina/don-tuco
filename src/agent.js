@@ -94,6 +94,7 @@ export async function runAgent(pack, messages, ctx) {
           content: JSON.stringify(out),
         });
       } catch (err) {
+        console.error(`tool ${tu.name} failed:`, err.message);
         results.push({
           type: "tool_result",
           tool_use_id: tu.id,

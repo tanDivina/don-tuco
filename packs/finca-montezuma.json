@@ -7,13 +7,21 @@
     "longitude": -82.2708,
     "arrivalNotes": "Reachable by boat from Bocas Town or Almirante. We can help arrange a boat — just ask."
   },
-  "languages": ["es", "en", "nl"],
+  "languages": [
+    "es",
+    "en",
+    "nl"
+  ],
   "defaultLanguage": "es",
   "currency": "USD",
   "tours": [
     {
       "id": "tasting",
-      "name": { "en": "Cacao Tasting Tour", "es": "Tour de Degustación de Cacao", "nl": "Cacao Proeverij Tour" },
+      "name": {
+        "en": "Cacao Tasting Tour",
+        "es": "Tour de Degustación de Cacao",
+        "nl": "Cacao Proeverij Tour"
+      },
       "durationMinutes": 120,
       "pricePerPerson": 20,
       "description": {
@@ -24,7 +32,11 @@
     },
     {
       "id": "workshop",
-      "name": { "en": "Chocolate Workshop & Tasting", "es": "Taller de Chocolate y Degustación", "nl": "Chocolade Workshop & Proeverij" },
+      "name": {
+        "en": "Chocolate Workshop & Tasting",
+        "es": "Taller de Chocolate y Degustación",
+        "nl": "Chocolade Workshop & Proeverij"
+      },
       "durationMinutes": 180,
       "pricePerPerson": 40,
       "description": {
@@ -35,7 +47,11 @@
     },
     {
       "id": "custom",
-      "name": { "en": "Custom Tour", "es": "Tour Personalizado", "nl": "Tour op Maat" },
+      "name": {
+        "en": "Custom Tour",
+        "es": "Tour Personalizado",
+        "nl": "Tour op Maat"
+      },
       "durationMinutes": 120,
       "pricePerPerson": 30,
       "description": {
@@ -45,22 +61,40 @@
       }
     }
   ],
-  "standardSlots": ["11:00", "14:00"],
+  "standardSlots": [
+    "11:00",
+    "14:00"
+  ],
   "timezone": "America/Panama",
   "maxGroupSize": 10,
   "icalUrl": "",
   "faq": [
-    { "q": "What should I bring?", "a": "Closed shoes or rubber boots, insect repellent, water, and rain gear — this is rainforest. We provide everything for the tastings." },
-    { "q": "Is it kid-friendly?", "a": "Yes — kids love the chocolate workshop. Children under 6 join free on the tasting tour." },
-    { "q": "How do I pay?", "a": "Cash (USD) at the farm, or we can send a payment link for groups of 5+." },
-    { "q": "Is the cacao ceremonial?", "a": "We don't use that label. It is 100% pure cacao paste, grown, fermented, and stone-ground here at the farm." },
-    { "q": "How do I get there?", "a": "By boat from Bocas Town (about 45 min) or Almirante. We can connect you with trusted boat captains — ask us." }
+    {
+      "q": "What should I bring?",
+      "a": "Closed shoes or rubber boots, insect repellent, water, and rain gear — this is rainforest. We provide everything for the tastings."
+    },
+    {
+      "q": "Is it kid-friendly?",
+      "a": "Yes — kids love the chocolate workshop. Children under 6 join free on the tasting tour."
+    },
+    {
+      "q": "How do I pay?",
+      "a": "Cash (USD) at the farm, or we can send a payment link for groups of 5+."
+    },
+    {
+      "q": "Is the cacao ceremonial?",
+      "a": "We don't use that label. It is 100% pure cacao paste, grown, fermented, and stone-ground here at the farm."
+    },
+    {
+      "q": "How do I get there?",
+      "a": "By boat from Bocas Town (about 45 min) or Almirante. We can connect you with trusted boat captains — ask us."
+    }
   ],
   "escalation": {
     "note": "Human owner reachable via WhatsApp; Don Tuco hands off for complaints, pricing exceptions, groups over maxGroupSize, or anything he is unsure about."
   },
   "email": {
-    "fromAddress": "bookings@hero-apps.com",
+    "fromAddress": "dorien@hero-apps.com",
     "ownerNotify": "dorien.vda@gmail.com"
   }
 }

@@ -104,6 +104,17 @@ export async function executeTool(pack, name, input, ctx) {
       const dayBookings = await listBookings(pack.operatorId, input.date);
       const taken = new Set(dayBookings.map((b) => b.time));
       // TODO: also merge busy blocks from pack.icalUrl once the calendar URL is set.
+      const mine = dayBookings.find((b) => b.time === input.time && b.waId === ctx.waId);
+      if (mine) {
+        return {
+          date: input.date,
+          time: input.time,
+          available: false,
+          alreadyYours: true,
+          note: "This guest already holds this slot. It is their confirmed booking, not a conflict.",
+          booking: { id: mine.id, guestName: mine.guestName, people: mine.people, tourId: mine.tourId },
+        };
+      }
       const free = !taken.has(input.time);
       const alternatives = pack.standardSlots.filter((s) => !taken.has(s) && s !== input.time);
       return { date: input.date, time: input.time, available: free, openAlternatives: alternatives };
@@ -120,22 +131,56 @@ export async function executeTool(pack, name, input, ctx) {
       };
     }
     case "book_tour": {
-      const conflict = (await listBookings(pack.operatorId, input.date)).some(
+      const sameSlot = (await listBookings(pack.operatorId, input.date)).filter(
         (b) => b.time === input.time
       );
-      if (conflict) return { booked: false, reason: "slot was just taken — re-check availability" };
-      const booking = {
-        id: `bk_${Date.now().toString(36)}`,
-        operatorId: pack.operatorId,
-        ...input,
-        createdAt: new Date().toISOString(),
-        channel: "whatsapp",
-        waId: ctx.waId,
-      };
+      const own = sameSlot.find((b) => b.waId === ctx.waId);
+      const foreign = sameSlot.find((b) => b.waId !== ctx.waId);
+      if (foreign && !own) {
+        return { booked: false, reason: "that slot is held by another guest's booking; offer an alternative" };
+      }
+
+      // Re-booking the guest's own slot is an update (e.g. adding an email), never a conflict.
+      const booking = own
+        ? {
+            ...own,
+            guestName: input.guestName || own.guestName,
+            guestEmail: input.guestEmail || own.guestEmail,
+            notes: input.notes || own.notes,
+            people: input.people || own.people,
+            updatedAt: new Date().toISOString(),
+          }
+        : {
+            id: `bk_${Date.now().toString(36)}`,
+            operatorId: pack.operatorId,
+            ...input,
+            createdAt: new Date().toISOString(),
+            channel: "whatsapp",
+            waId: ctx.waId,
+          };
       await saveBooking(booking);
-      if (ctx.confirmEmail) await ctx.confirmEmail(booking);
-      if (ctx.notifyOwner) await ctx.notifyOwner(`New booking: ${JSON.stringify(booking)}`);
-      return { booked: true, booking };
+
+      // Email problems must never un-book a guest: report them, don't throw.
+      let emailSent = false, emailError = null;
+      try {
+        if (ctx.confirmEmail) await ctx.confirmEmail(booking);
+        emailSent = Boolean(booking.guestEmail);
+      } catch (err) {
+        emailError = err.message;
+        console.error("confirmEmail failed:", err.message);
+      }
+      try {
+        if (ctx.notifyOwner) await ctx.notifyOwner(`New booking: ${JSON.stringify(booking)}`);
+      } catch (err) {
+        console.error("notifyOwner failed:", err.message);
+      }
+      return {
+        booked: true,
+        updated: Boolean(own),
+        booking,
+        emailSent,
+        ...(emailError ? { emailNote: "confirmation email could not be sent; booking is still recorded" } : {}),
+      };
     }
     case "send_location": {
       if (ctx.sendLocation) await ctx.sendLocation(pack.location);
