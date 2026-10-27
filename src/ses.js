@@ -20,7 +20,7 @@ export async function confirmBooking(pack, booking) {
     await sendEmail(
       pack.email.fromAddress,
       booking.guestEmail,
-      `Booking confirmed — ${tour?.name.en} at ${pack.businessName}`,
+      `Booking confirmed: ${tour?.name.en} at ${pack.businessName}`,
       [
         `¡Confirmado! / Confirmed!`,
         ``,
@@ -30,7 +30,7 @@ export async function confirmBooking(pack, booking) {
         ``,
         `Getting there: ${pack.location.arrivalNotes}`,
         ``,
-        `Reply to this WhatsApp thread any time — Don Tuco is awake.`,
+        `Questions? Reply in the same WhatsApp chat any time, Don Tuco is awake.`,
       ].join("\n")
     );
   }
