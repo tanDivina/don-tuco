@@ -93,6 +93,14 @@
   "escalation": {
     "note": "Human owner reachable via WhatsApp; Don Tuco hands off for complaints, pricing exceptions, groups over maxGroupSize, or anything he is unsure about."
   },
+  "owner": {
+    "name": "Dorien",
+    "whatsapp": "",
+    "template": {
+      "name": "don_tuco_handoff",
+      "language": "en"
+    }
+  },
   "email": {
     "fromAddress": "dorien@hero-apps.com",
     "ownerNotify": "dorien.vda@gmail.com"

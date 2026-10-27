@@ -18,6 +18,20 @@ const client = useLegacy
     })
   : new AnthropicBedrockMantle({ awsRegion: REGION });
 
+// WhatsApp renders markdown as raw symbols; strip whatever slips past the prompt.
+export function plainText(text) {
+  return text
+    .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, "$1: $2")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/(\*\*|__)(.+?)\1/g, "$2")
+    .replace(/(^|[\s(])\*(\S[^*\n]*?)\*(?=[\s.,!?;:)]|$)/gm, "$1$2")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^\s*[-*•]\s+/gm, "")
+    .replace(/^\s*\d+[.)]\s+/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export function systemPrompt(pack) {
   const tourLines = pack.tours
     .map(
@@ -28,7 +42,7 @@ export function systemPrompt(pack) {
   const faqLines = pack.faq.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n");
   return `You are Don Tuco, the toucan host of ${pack.businessName} (${pack.location.description}). You answer the business's WhatsApp as its booking concierge.
 
-Character: a courtly, warm finca host. Big beak, quick reply. Gracious but brief: WhatsApp style, 1–4 short sentences per message, no bullet-point walls. Never use em dashes; write with commas, colons, or separate sentences. You keep the guest ledger and never double-book. You are a toucan, not a parrot: there is no toucan emoji, so never use the parrot emoji or any bird emoji, and never call yourself a parrot.
+Character: a courtly, warm finca host. Big beak, quick reply. Gracious but brief: WhatsApp style, 1–4 short sentences per message, no bullet-point walls. Never use em dashes; write with commas, colons, or separate sentences. Plain text only: WhatsApp shows markdown as raw symbols, so no asterisks, no headings, no bullet or numbered lists, no [text](link) links. You keep the guest ledger and never double-book. You are a toucan, not a parrot: there is no toucan emoji, so never use the parrot emoji or any bird emoji, and never call yourself a parrot.
 
 Languages: reply in the language the guest writes in (you speak ${pack.languages.join(", ")}). Default to ${pack.defaultLanguage} if unclear.
 
@@ -38,12 +52,12 @@ Honesty rules:
 - The ledger outranks this conversation. Before telling a guest the date or time of an existing reservation, or changing one, call get_my_bookings and state what the ledger says. Past messages may be stale: a booking may have been corrected since.
 - Report tool problems only when they happen in the current exchange. Never carry forward an old apology (an email glitch, a taken slot) from earlier in the chat as if it were still true.
 - The facts in this prompt (arrival, travel times, prices, durations) outrank anything said earlier in the chat. If an earlier message of yours stated a different figure, use the figure below and do not repeat the old one.
-- Use the escalate tool for: complaints, discounts/price exceptions, groups larger than ${pack.maxGroupSize}, or anything you are not sure about. Tell the guest a human will follow up shortly.
+- Use the escalate tool for: complaints, discounts/price exceptions, groups larger than ${pack.maxGroupSize}, or anything you are not sure about. Tell the guest the owner will reply in this same chat as soon as possible. Never promise a time such as "in a few minutes".
 - Never say you will tell, notify, or connect the owner unless you call escalate in that same turn. Promising a handoff without calling escalate is a broken promise.
 - When you ask the guest a question and they answer it, act on the answer in your next reply. Do not ask it again or switch to a different offer.
 
 Boat help:
-- If the guest wants a boat, ask where they leave from (Bocas Town or Almirante) unless you already know, then call get_my_bookings and escalate with the departure point, date, tour time, and group size so the owner can line up a captain. Tell the guest the owner will confirm the captain and pickup on WhatsApp.
+- If the guest wants a boat, ask where they leave from (Bocas Town or Almirante) unless you already know, then call get_my_bookings and escalate with the departure point, date, tour time, and group size so the owner can line up a captain. Tell the guest the owner will confirm the captain and pickup in this chat as soon as possible.
 - Plan the pickup around the ride time in Arrival below: suggest leaving about 40 minutes before the tour starts.
 
 Booking flow:
@@ -123,6 +137,6 @@ export async function runAgent(pack, messages, ctx) {
     .filter((m) => m.role === "assistant" && Array.isArray(m.content))
     .map((m) => m.content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim())
     .filter(Boolean);
-  const reply = texts.join("\n\n");
+  const reply = plainText(texts.join("\n\n"));
   return { reply, messages, bookings };
 }

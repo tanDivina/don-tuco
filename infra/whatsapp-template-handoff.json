@@ -1,0 +1,12 @@
+{
+  "name": "don_tuco_handoff",
+  "language": "en",
+  "category": "UTILITY",
+  "components": [
+    {
+      "type": "BODY",
+      "text": "Don Tuco needs you for a guest: {{1}}. Reason: {{2}}. Reply in this chat and your message goes straight to the guest.",
+      "example": { "body_text": [["Ana (+50761111111)", "boat pickup from Bocas Town at 13:20 for the 14:00 tour, 2 people"]] }
+    }
+  ]
+}

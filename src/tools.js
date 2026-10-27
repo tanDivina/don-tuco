@@ -213,6 +213,10 @@ export async function executeTool(pack, name, input, ctx) {
       return { sent: true, note: "Location pin delivered. You can also describe the boat arrival." };
     }
     case "escalate": {
+      if (ctx.escalate) {
+        const channel = await ctx.escalate(input.reason);
+        return { escalated: true, ownerAlertedVia: channel, note: "The owner replies in this same chat, from this number." };
+      }
       if (ctx.notifyOwner) await ctx.notifyOwner(`Don Tuco escalation (${ctx.waId}): ${input.reason}`);
       return { escalated: true };
     }

@@ -58,6 +58,19 @@ export async function sendText(to, text) {
   await send({ to, type: "text", text: { body: text } });
 }
 
+/** Approved message template: the only way to reach someone outside the 24h window. */
+export async function sendTemplate(to, name, language, bodyParams) {
+  await send({
+    to,
+    type: "template",
+    template: {
+      name,
+      language: { code: language },
+      components: [{ type: "body", parameters: bodyParams.map((text) => ({ type: "text", text })) }],
+    },
+  });
+}
+
 export async function sendLocation(to, loc) {
   await send({
     to,
