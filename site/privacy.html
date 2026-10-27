@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy · Don Tuco</title>
+<meta name="description" content="Privacy Policy and Transactional Data Handling for Don Tuco — WhatsApp host and concierge for tour operators.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/don-tuco-avatar-32.png">
+<style>
+:root{
+  --ink:#241309;
+  --cacao:#4a2c17;
+  --cream:#f7f1e5;
+  --cream-deep:#efe5d2;
+  --leaf:#2e5e3a;
+  --beak:#e8912d;
+  --rule:#d9cbb2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.65;padding:40px 20px 80px}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{font-family:'Fraunces',serif;color:var(--ink);line-height:1.2}
+h1{font-size:2.5rem;margin:24px 0 10px}
+h2{font-size:1.45rem;margin:36px 0 12px;color:var(--cacao);border-bottom:1px solid var(--rule);padding-bottom:8px}
+p{margin-bottom:16px;font-size:1rem;color:var(--ink)}
+ul{margin:0 0 20px 24px}
+li{margin-bottom:8px}
+a{color:var(--leaf);text-decoration:none;font-weight:500}
+a:hover{text-decoration:underline}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:.9rem;color:var(--cacao);margin-bottom:20px}
+.callout{background:var(--cream-deep);border-left:4px solid var(--beak);border-radius:8px;padding:18px 20px;margin:24px 0}
+.callout strong{display:block;margin-bottom:6px;color:var(--cacao)}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-size:.85rem;color:var(--cacao);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back">← Back to Don Tuco</a>
+  <h1>Privacy Policy</h1>
+  <p><em>Effective Date: October 27, 2026</em></p>
+
+  <p>
+    <strong>Don Tuco</strong> is an AI-powered conversational concierge and booking assistant for tour and hospitality operators (such as Finca Montezuma in Bocas del Toro, Panama). Don Tuco is operated by <strong>Divina Endeavors LLC</strong>, doing business as <strong>Hero Apps</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;).
+  </p>
+
+  <div class="callout">
+    <strong>Transactional Integrity Promise:</strong>
+    Don Tuco handles only strictly transactional communications. We never sell, monetize, or rent guest or operator contact data. We never send unsolicited bulk marketing or third-party advertising.
+  </div>
+
+  <h2>1. Scope &amp; How Data Is Collected</h2>
+  <p>We receive information only when a guest or business operator voluntarily interacts with Don Tuco:</p>
+  <ul>
+    <li><strong>WhatsApp Conversational Data:</strong> When a prospective guest reaches out to an operator's verified WhatsApp business number, inbound messages are processed to answer tour availability, pricing, directions, and schedule bookings.</li>
+    <li><strong>Booking Contact Details:</strong> When a guest confirms a tour, they provide their full name, phone number, and email address specifically to receive their calendar invitation, directions, and booking voucher.</li>
+    <li><strong>Operator Waitlist &amp; Setup Requests:</strong> Tour operators who sign up on our website provide their name, business email, and tour description so our human onboarding team can assist with configuration.</li>
+  </ul>
+
+  <h2>2. How We Use Transactional Email (Amazon SES)</h2>
+  <p>Our email infrastructure runs on Amazon Simple Email Service (SES) with messages sent from verified addresses on <code>hero-apps.com</code> and <code>dontuco.hero-apps.com</code>. We send strictly transactional emails for the following operational triggers:</p>
+  <ul>
+    <li><strong>Guest Booking Confirmations:</strong> Digital vouchers containing arrival time, meeting point, cacao tour instructions, and payment receipts.</li>
+    <li><strong>Operator Internal Alerts:</strong> Immediate dispatch to the local tour guide or farm manager notifying them of a newly confirmed party.</li>
+    <li><strong>Setup Inquiries:</strong> Direct response from our support team to operators who requested Don Tuco for their business.</li>
+  </ul>
+
+  <h2>3. Bounce, Complaint &amp; Suppression Management</h2>
+  <p>
+    We maintain strict deliverability standards. Bounces and complaints are monitored programmatically via Amazon SNS and CloudWatch alarms. If a recipient's address bounces or marks a message as spam, that address is immediately suppressed and removed from all future automated sends.
+  </p>
+
+  <h2>4. Cloud Infrastructure &amp; Third-Party Processors</h2>
+  <p>Don Tuco runs entirely on audited enterprise cloud infrastructure:</p>
+  <ul>
+    <li><strong>Amazon Web Services (AWS):</strong> Compute (AWS Lambda), agent orchestration (Amazon Bedrock), transactional email delivery (Amazon SES), and conversational messaging (AWS End User Messaging Social).</li>
+    <li><strong>Vercel:</strong> Secure static hosting and SSL termination for <code>dontuco.hero-apps.com</code>.</li>
+    <li><strong>Meta / WhatsApp Cloud API:</strong> Secure end-to-end messaging transport between guests and business phone numbers.</li>
+  </ul>
+
+  <h2>5. Data Retention &amp; Rights (GDPR &amp; CCPA)</h2>
+  <p>
+    Under the General Data Protection Regulation (GDPR), California Consumer Privacy Act (CCPA), and applicable international privacy frameworks, guests and operators retain full control over their personal information. You have the right to:
+  </p>
+  <ul>
+    <li>Request a copy of all stored conversation transcripts and booking records.</li>
+    <li>Request immediate and permanent deletion of your contact details from our active ledgers and databases.</li>
+    <li>Opt out of any further communication at any time by texting <code>STOP</code> in WhatsApp or emailing our support desk.</li>
+  </ul>
+
+  <h2>6. Contact Us</h2>
+  <p>
+    For any questions regarding this Privacy Policy, your booking data, or to request data erasure, please contact:
+  </p>
+  <p>
+    <strong>Divina Endeavors LLC (Hero Apps)</strong><br>
+    Bocas del Toro, Republic of Panama<br>
+    Email: <a href="mailto:support@hero-apps.com">support@hero-apps.com</a><br>
+    Direct Alliance Lead: <a href="mailto:dorien@hero-apps.com">dorien@hero-apps.com</a>
+  </p>
+
+  <footer>
+    <span>© 2026 Divina Endeavors LLC · Hero Apps</span>
+    <span><a href="/">Return to Don Tuco</a></span>
+  </footer>
+</div>
+</body>
+</html>
