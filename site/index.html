@@ -72,11 +72,19 @@ nav a.cta{background:var(--ink);color:var(--cream);padding:9px 16px;border-radiu
   display:flex;align-items:flex-end;justify-content:center;
   --dx:14;--dy:6;
 }
-.tuco-wrap img{
-  height:78%;max-height:820px;width:auto;object-fit:contain;object-position:bottom center;
-  margin-left:11vw;
-  filter:drop-shadow(0 26px 34px rgba(36,19,9,.20));
+.tuco-box{position:relative;height:78%;max-height:820px;aspect-ratio:1/1;margin-left:11vw}
+.tuco-box img,.tuco-box video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;object-position:bottom center;
 }
+.tuco-box img{filter:drop-shadow(0 26px 34px rgba(36,19,9,.20))}
+.tuco-live{
+  opacity:0;transition:opacity .5s ease;pointer-events:none;
+  -webkit-mask-image:url('assets/don-tuco-cutout.png');mask-image:url('assets/don-tuco-cutout.png');
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+.stage.tuco-play .tuco-live{opacity:1}
 .fade{display:none}
 .ground{
   position:absolute;left:calc(50% + 5.5vw);bottom:2.5vh;z-index:2;transform:translateX(-50%);
@@ -165,7 +173,7 @@ nav a.cta{background:var(--ink);color:var(--cream);padding:9px 16px;border-radiu
   .float-chat{max-width:62vw}
   .chat-guest{top:30%}
   .chat-tuco{top:47%}
-  .tuco-wrap img{height:60%;margin-left:14vw}
+  .tuco-box{height:60%;margin-left:14vw}
 }
 @media (max-width:640px){
   .eyebrow{top:84px;font-size:10.5px;letter-spacing:.18em}
@@ -174,7 +182,7 @@ nav a.cta{background:var(--ink);color:var(--cream);padding:9px 16px;border-radiu
   .chat-tuco{right:14px;top:37%}
   .bubble{font-size:14px;padding:10px 13px}
   .tuco-wrap{bottom:205px}
-  .tuco-wrap img{height:36%;margin-left:0}
+  .tuco-box{height:36%;margin-left:0}
   .ground{display:none}
   .fade{
     display:block;position:absolute;left:0;right:0;bottom:0;height:280px;z-index:12;pointer-events:none;
@@ -188,7 +196,7 @@ nav a.cta{background:var(--ink);color:var(--cream);padding:9px 16px;border-radiu
 }
 @media (max-height:700px) and (min-width:641px){
   .ghost-wrap{top:11%}
-  .tuco-wrap img{height:66%}
+  .tuco-box{height:66%}
   .bottom{gap:12px;bottom:22px}
   .eyebrow{top:78px}
 }
@@ -286,7 +294,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
   <div class="ground in" style="--d:.55s"></div>
   <div class="tuco-wrap px in in-tuco" style="--d:.3s">
-    <img src="assets/don-tuco-cutout.png" alt="Don Tuco, a toucan in a brown tuxedo holding an orange booking ledger, standing among palm leaves" width="1024" height="1024">
+    <div class="tuco-box">
+      <img src="assets/don-tuco-cutout.png" alt="Don Tuco, a toucan in a brown tuxedo holding an orange booking ledger, standing among palm leaves" width="1024" height="1024">
+      <video class="tuco-live" src="assets/don-tuco-animated.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+    </div>
   </div>
 
   <header class="in" style="--d:.7s">
@@ -527,6 +538,29 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       tx = e.clientX / innerWidth - 0.5; ty = e.clientY / innerHeight - 0.5;
       if (!raf) raf = requestAnimationFrame(loop);
     }, { passive: true });
+  })();
+
+  /* Don Tuco comes alive when the CTA is hovered */
+  (function () {
+    var vid = document.querySelector('.tuco-live');
+    var cta = document.querySelector('.poster-cta');
+    var stage = document.getElementById('stage');
+    if (!vid || !cta) return;
+    if (reduced || !matchMedia('(hover: hover) and (pointer: fine)').matches) { vid.remove(); return; }
+    var t;
+    var on = function () {
+      clearTimeout(t);
+      if (vid.play) vid.play().catch(function () {});
+      stage.classList.add('tuco-play');
+    };
+    var off = function () {
+      stage.classList.remove('tuco-play');
+      t = setTimeout(function () { vid.pause(); }, 520);
+    };
+    cta.addEventListener('mouseenter', on);
+    cta.addEventListener('focus', on);
+    cta.addEventListener('mouseleave', off);
+    cta.addEventListener('blur', off);
   })();
 
   /* the conversation that answers itself */
