@@ -175,11 +175,6 @@ export async function executeTool(pack, name, input, ctx) {
         emailError = err.message;
         console.error("confirmEmail failed:", err.message);
       }
-      try {
-        if (ctx.notifyOwner) await ctx.notifyOwner(`New booking: ${JSON.stringify(booking)}`);
-      } catch (err) {
-        console.error("notifyOwner failed:", err.message);
-      }
       return {
         booked: true,
         updated: Boolean(own),
