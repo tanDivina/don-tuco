@@ -55,6 +55,12 @@ export function makeTools(pack) {
       },
     },
     {
+      name: "get_my_bookings",
+      description:
+        "Look up this guest's existing bookings in the ledger. The ledger is the source of truth: use it whenever the guest asks about their reservation, wants to change it, or the conversation history is unclear about what was booked. Never state a booked date or time from memory.",
+      input_schema: { type: "object", properties: {} },
+    },
+    {
       name: "send_location",
       description:
         "Send the farm's location pin to the guest on WhatsApp. Use when they ask where the farm is or how to get there.",
@@ -181,6 +187,26 @@ export async function executeTool(pack, name, input, ctx) {
         emailSent,
         ...(emailError ? { emailNote: "confirmation email could not be sent; booking is still recorded" } : {}),
       };
+    }
+    case "get_my_bookings": {
+      const all = ddb
+        ? (
+            await ddb.send(
+              new QueryCommand({
+                TableName: BOOKINGS_TABLE,
+                KeyConditionExpression: "operatorId = :o",
+                ExpressionAttributeValues: { ":o": pack.operatorId },
+              })
+            )
+          ).Items || []
+        : memoryBookings;
+      const mine = all
+        .filter((b) => b.waId === ctx.waId)
+        .map((b) => ({
+          id: b.id, tourId: b.tourId, date: b.date, time: b.time,
+          people: b.people, guestName: b.guestName, guestEmail: b.guestEmail || null,
+        }));
+      return { bookings: mine, note: mine.length ? "These ledger entries are the truth; correct the guest gently if the chat said otherwise." : "No bookings in the ledger for this guest." };
     }
     case "send_location": {
       if (ctx.sendLocation) await ctx.sendLocation(pack.location);
