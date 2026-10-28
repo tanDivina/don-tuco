@@ -25,6 +25,8 @@ Don Tuco is the farm's toucan host on its WhatsApp Business number, +1 414 261 7
 - says he is the farm's AI assistant and that a person reads every booking ([1:27](https://youtu.be/S1BUH-aEncQ?t=87))
 - hands the chat to me when a group is over the limit of 10 ([1:35](https://youtu.be/S1BUH-aEncQ?t=95))
 
+He also understands voice notes, which many guests in Latin America send instead of typing. AWS End User Messaging Social copies the audio to S3, Amazon Transcribe detects Spanish, English or Dutch and writes it out, and he answers what was said. I added this on Oct 28, after recording the demo.
+
 Outside the demo he also checks my Google Calendar before he offers a slot, so a private group or a day off blocks it, and he writes every booking into that calendar. He reads an existing booking from the ledger instead of trusting the chat history. When a guest needs a boat, he asks where they leave from, suggests a time (the ride from Bocas Town takes 25 to 30 minutes) and sends me the pickup details.
 
 The handoff stays in WhatsApp. The alert reaches my own WhatsApp, I answer in that chat, and Don Tuco passes my message to the guest from the business number, then stays quiet for that guest until I send `#bot`. Outside Meta's 24-hour window the alert has to be a message template. I submitted the utility template `don_tuco_handoff` and it is still waiting for Meta's review, so for now that case falls back to an email with a tap-to-chat link.
@@ -38,6 +40,7 @@ The engine knows nothing about cacao. Tours, prices, time slots, languages, FAQ,
 - **Amazon DynamoDB** holds the booking ledger, the 24-hour conversation state (its TTL matches Meta's customer-service window) and the handoff state.
 - **Google Calendar API**, through a service account signed with node:crypto: my own events block overlapping slots, with each tour's length taken into account, and each booking becomes an event. A calendar outage never blocks a booking.
 - **Amazon SES** sends guest confirmations and my booking and handoff emails.
+- **Amazon Transcribe** turns inbound voice notes into text: `GetWhatsAppMessageMedia` copies the audio to a private S3 bucket that deletes it after a day, and the transcription job is deleted once the reply is sent.
 - **Amazon CloudWatch** records reply latency for every message.
 - The infrastructure is one CloudFormation template.
 
@@ -56,7 +59,7 @@ The engine knows nothing about cacao. Tours, prices, time slots, languages, FAQ,
 Most of the work went into the rules around the model: availability only from the tools, no promise unless the tool call that keeps it happens in the same turn, and a fast handoff to a person.
 
 ## What's next for Don Tuco
-Day-before reminder templates, payment links for larger groups, understanding voice notes, and cancellations that remove the calendar event. Then Papito's Nature Tours and the other Bocas del Toro operators I build websites for ([2:38](https://youtu.be/S1BUH-aEncQ?t=158)).
+Day-before reminder templates, payment links for larger groups, and cancellations that remove the calendar event. Then Papito's Nature Tours and the other Bocas del Toro operators I build websites for ([2:38](https://youtu.be/S1BUH-aEncQ?t=158)).
 
 ## Try it
 Message **+1 414 261 7820** on WhatsApp in Spanish, English or Dutch. Ask about tours, a date, the price for your group and how to get to the farm, then book. Ask "are you a bot?" to see the AI disclosure, or ask for a discount to trigger the handoff.
@@ -65,7 +68,7 @@ Message **+1 414 261 7820** on WhatsApp in Spanish, English or Dutch. Ask about 
 - Amazon SES for this account is still in the sandbox, so confirmation emails only reach my verified addresses. The booking itself is saved and confirmed in WhatsApp for everyone.
 
 ## Built with
-amazon-web-services, aws-end-user-messaging, amazon-bedrock, claude, aws-lambda, amazon-dynamodb, amazon-ses, amazon-sns, amazon-cloudwatch, aws-cloudformation, node.js, whatsapp
+amazon-web-services, aws-end-user-messaging, amazon-bedrock, claude, aws-lambda, amazon-dynamodb, amazon-ses, amazon-sns, amazon-transcribe, amazon-s3, amazon-cloudwatch, aws-cloudformation, node.js, whatsapp
 
 ## Links
 - Live site: https://dontuco.hero-apps.com
