@@ -32,6 +32,7 @@ export function parseInbound(snsMessage) {
           type: msg.type,
           text: msg.text?.body || msg.interactive?.list_reply?.title || msg.interactive?.button_reply?.title || "",
           location: msg.location,
+          mediaId: msg.audio?.id,
           guestName: value.contacts?.[0]?.profile?.name || "",
         });
       }

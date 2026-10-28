@@ -61,6 +61,19 @@ Resources:
         - { AttributeName: operatorId, KeyType: HASH }
         - { AttributeName: sk, KeyType: RANGE }
 
+  # Inbound voice notes land here for Amazon Transcribe and are gone a day later.
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - { Id: expire-voice-notes, Status: Enabled, ExpirationInDays: 1 }
+
   AgentRole:
     Type: AWS::IAM::Role
     Properties:
@@ -86,7 +99,13 @@ Resources:
                 Action: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"]
                 Resource: "*"
               - Effect: Allow
-                Action: ["social-messaging:SendWhatsAppMessage", "social-messaging:PostWhatsAppMessageMedia"]
+                Action: ["social-messaging:SendWhatsAppMessage", "social-messaging:PostWhatsAppMessageMedia", "social-messaging:GetWhatsAppMessageMedia"]
+                Resource: "*"
+              - Effect: Allow
+                Action: ["s3:PutObject", "s3:GetObject"]
+                Resource: !Sub "${MediaBucket.Arn}/*"
+              - Effect: Allow
+                Action: ["transcribe:StartTranscriptionJob", "transcribe:GetTranscriptionJob", "transcribe:DeleteTranscriptionJob"]
                 Resource: "*"
               - Effect: Allow
                 Action: ["ses:SendEmail"]
@@ -114,6 +133,7 @@ Resources:
           GOOGLE_SA_KEY: !Ref GoogleSaKey
           OPERATOR_PACK: !Ref OperatorPack
           MODEL_ID: !Ref ModelId
+          MEDIA_BUCKET: !Ref MediaBucket
 
   InboundSubscription:
     Type: AWS::SNS::Subscription

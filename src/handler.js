@@ -7,6 +7,7 @@ import { DynamoDBDocumentClient, GetCommand, PutCommand } from "@aws-sdk/lib-dyn
 import { runAgent } from "./agent.js";
 import { parseInbound, sendText, sendLocation } from "./whatsapp.js";
 import { confirmBooking, notifyOwner } from "./ses.js";
+import { canTranscribe, transcribeVoiceNote } from "./voice.js";
 import { isOwner, ownerKey, alertOwner, handoffActive, nextHandoffUntil, parseOwnerMessage } from "./owner.js";
 
 const pack = JSON.parse(
@@ -116,6 +117,17 @@ function mediaNote(msg) {
   return `[The guest sent a ${msg.type || "file"} you can't see. Say so and ask them to describe what they need in text.]`;
 }
 
+async function voiceNoteText(msg) {
+  if (msg.type !== "audio" || !msg.mediaId || !canTranscribe()) return "";
+  try {
+    const said = await transcribeVoiceNote(msg.mediaId, pack.languages);
+    return said ? `[Voice note, transcribed:] ${said}` : "";
+  } catch (err) {
+    console.error("voice note transcription failed:", err.message);
+    return "";
+  }
+}
+
 export async function handler(event) {
   for (const record of event.Records || []) {
     const inbound = parseInbound(record.Sns?.Message || "{}");
@@ -123,7 +135,7 @@ export async function handler(event) {
       if (msg.type === "reaction") continue;
       if (!msg.text) {
         if (isOwner(pack, msg.waId)) continue;
-        msg.text = mediaNote(msg);
+        msg.text = (await voiceNoteText(msg)) || mediaNote(msg);
       }
       const t0 = Date.now();
 
