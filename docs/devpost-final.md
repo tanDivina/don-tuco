@@ -9,30 +9,30 @@ An agentic WhatsApp concierge for small Latin American tour operators: real avai
 ## Story
 
 ## Inspiration
-I run the tours at Finca Montezuma, my cacao farm in Dolphin Bay, Bocas del Toro, Panama. You can only reach it by boat, and every booking comes in on one WhatsApp number. Guests write late at night, while I'm on another tour or out on the boat, in Spanish, English or Dutch, and I miss messages and bookings (0:03). Small tour operators across Latin America run their business the same way. A chat widget on their website doesn't help, because their guests are already in WhatsApp.
+I run the tours at Finca Montezuma, my cacao farm in Dolphin Bay, Bocas del Toro, Panama. You can only reach it by boat, and every booking comes in on one WhatsApp number. Guests write late at night, while I'm on another tour or out on the boat, in Spanish, English or Dutch, and I miss messages and bookings. Small tour operators across Latin America run their business the same way. A chat widget on their website doesn't help, because their guests are already in WhatsApp.
 
 So Finca Montezuma is my own business. I built Don Tuco, I'm his first customer, and I'm the owner he hands guests to.
 
-Watch the demo (3:00): https://youtu.be/S1BUH-aEncQ. The timestamps below point to the moment in the video.
+Watch the demo (3:00): https://youtu.be/S1BUH-aEncQ. Each timestamp below opens the video at that moment.
 
 ## What it does
-Don Tuco is the farm's toucan host on its WhatsApp Business number, +1 414 261 7820. The demo (0:45) is a real conversation on my phone with the live agent. In it he:
+Don Tuco is the farm's toucan host on its WhatsApp Business number, +1 414 261 7820. The demo ([0:45](https://youtu.be/S1BUH-aEncQ?t=45)) is a real conversation on my phone with the live agent. In it he:
 
-- replies in Spanish and offers the two daily slots (0:51)
-- checks availability for Saturday at 11:00 and quotes the total, 4 × $20 = $80 (0:59)
-- books after the guest confirms, writes the booking to the ledger and sends a confirmation email through Amazon SES (1:07)
-- switches to English when the guest does, and sends a WhatsApp location pin with boat directions (1:16)
-- says he is the farm's AI assistant and that a person reads every booking (1:27)
-- hands the chat to me when a group is over the limit of 10 (1:35)
+- replies in Spanish and offers the two daily slots ([0:51](https://youtu.be/S1BUH-aEncQ?t=51))
+- checks availability for Saturday at 11:00 and quotes the total, 4 × $20 = $80 ([0:59](https://youtu.be/S1BUH-aEncQ?t=59))
+- books after the guest confirms, writes the booking to the ledger and sends a confirmation email through Amazon SES ([1:07](https://youtu.be/S1BUH-aEncQ?t=67))
+- switches to English when the guest does, and sends a WhatsApp location pin with boat directions ([1:16](https://youtu.be/S1BUH-aEncQ?t=76))
+- says he is the farm's AI assistant and that a person reads every booking ([1:27](https://youtu.be/S1BUH-aEncQ?t=87))
+- hands the chat to me when a group is over the limit of 10 ([1:35](https://youtu.be/S1BUH-aEncQ?t=95))
 
 Outside the demo he also checks my Google Calendar before he offers a slot, so a private group or a day off blocks it, and he writes every booking into that calendar. He reads an existing booking from the ledger instead of trusting the chat history. When a guest needs a boat, he asks where they leave from, suggests a time (the ride from Bocas Town takes 25 to 30 minutes) and sends me the pickup details.
 
 The handoff stays in WhatsApp. The alert reaches my own WhatsApp, I answer in that chat, and Don Tuco passes my message to the guest from the business number, then stays quiet for that guest until I send `#bot`. Outside Meta's 24-hour window the alert has to be a message template. I submitted the utility template `don_tuco_handoff` and it is still waiting for Meta's review, so for now that case falls back to an email with a tap-to-chat link.
 
-## One JSON file per operator (2:17)
-The engine knows nothing about cacao. Tours, prices, time slots, languages, FAQ, arrival notes and email settings live in `packs/<operator>.json`. The next operator is the next file. In the video (2:47) that is Papito's Nature Tours, my partner's boat tour company, whose website bocasnaturetours.com I built.
+## One JSON file per operator ([2:17](https://youtu.be/S1BUH-aEncQ?t=137))
+The engine knows nothing about cacao. Tours, prices, time slots, languages, FAQ, arrival notes and email settings live in `packs/<operator>.json`. The next operator is the next file. In the video ([2:47](https://youtu.be/S1BUH-aEncQ?t=167)) that is Papito's Nature Tours, my partner's boat tour company, whose website bocasnaturetours.com I built.
 
-## How I built it (1:39)
+## How I built it ([1:39](https://youtu.be/S1BUH-aEncQ?t=99))
 - **AWS End User Messaging Social (WhatsApp)** is both the event source and the reply channel. Inbound messages arrive as Meta webhook entries on Amazon SNS, and replies, location pins, interactive lists and templates go out through `SendWhatsAppMessage` as Meta Cloud API JSON. There is no BSP and no webhook server to host.
 - **AWS Lambda (Node 22)** runs a Claude tool-use loop on **Amazon Bedrock** with six tools: `check_availability`, `quote_tour`, `book_tour`, `get_my_bookings`, `send_location`, `escalate`.
 - **Amazon DynamoDB** holds the booking ledger, the 24-hour conversation state (its TTL matches Meta's customer-service window) and the handoff state.
@@ -41,7 +41,7 @@ The engine knows nothing about cacao. Tours, prices, time slots, languages, FAQ,
 - **Amazon CloudWatch** records reply latency for every message.
 - The infrastructure is one CloudFormation template.
 
-## Measured on the live number (2:05)
+## Measured on the live number ([2:05](https://youtu.be/S1BUH-aEncQ?t=125))
 - **8.0 seconds median** from a guest sending a WhatsApp message to Don Tuco's reply arriving, over 14 real replies on the live number between Oct 26 and 27, 2026. All 14 came from my own test conversations. The agent itself took a median of 3.9 seconds; the rest is WhatsApp delivery. In the demo the replies take 5 to 9 seconds, and each one is stamped on screen.
 - **About 1 cent of AI per reply** (about 2,600 input tokens per call), and about 2 cents with WhatsApp delivery at list prices.
 - Benchmark, from an AWS partner webinar in October 2026: Latin America is over 40% of global WhatsApp Business adoption, and 68% of people say WhatsApp is the easiest way to contact a business.
@@ -56,7 +56,7 @@ The engine knows nothing about cacao. Tours, prices, time slots, languages, FAQ,
 Most of the work went into the rules around the model: availability only from the tools, no promise unless the tool call that keeps it happens in the same turn, and a fast handoff to a person.
 
 ## What's next for Don Tuco
-Day-before reminder templates, payment links for larger groups, understanding voice notes, and cancellations that remove the calendar event. Then Papito's Nature Tours and the other Bocas del Toro operators I build websites for (2:38).
+Day-before reminder templates, payment links for larger groups, understanding voice notes, and cancellations that remove the calendar event. Then Papito's Nature Tours and the other Bocas del Toro operators I build websites for ([2:38](https://youtu.be/S1BUH-aEncQ?t=158)).
 
 ## Try it
 Message **+1 414 261 7820** on WhatsApp in Spanish, English or Dutch. Ask about tours, a date, the price for your group and how to get to the farm, then book. Ask "are you a bot?" to see the AI disclosure, or ask for a discount to trigger the handoff.
