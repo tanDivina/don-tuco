@@ -58,6 +58,9 @@ The engine knows nothing about cacao. Tours, prices, time slots, languages, FAQ,
 ## What I learned
 Most of the work went into the rules around the model: availability only from the tools, no promise unless the tool call that keeps it happens in the same turn, and a fast handoff to a person.
 
+## How I'll sell it
+Hero Apps sells Don Tuco the way I already sell websites to tour operators in Bocas del Toro: I set it up per operator (a new pack file, their WhatsApp number on AWS End User Messaging Social), then run it as a managed service with a flat monthly fee. Every booking he makes is in the ledger, so the operator can see what the service brings in. The AWS cost is about 2 cents a reply and runs in an AWS account, with no WhatsApp provider in between. Next is listing it on AWS Marketplace.
+
 ## What's next for Don Tuco
 Day-before reminder templates, payment links for larger groups, and cancellations that remove the calendar event. Then Papito's Nature Tours and the other Bocas del Toro operators I build websites for ([2:38](https://youtu.be/S1BUH-aEncQ?t=158)).
 
