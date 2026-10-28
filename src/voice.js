@@ -15,18 +15,24 @@ const ORIGINATION_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || "";
 // Pack language -> Transcribe locale for automatic language identification.
 const LOCALES = { es: "es-US", en: "en-US", nl: "nl-NL", pt: "pt-BR", fr: "fr-FR", de: "de-DE" };
 
+// WhatsApp audio MIME subtype -> file extension EUM writes, which is also Transcribe's MediaFormat.
+const FORMATS = { ogg: "ogg", mpeg: "mp3", mp4: "mp4", amr: "amr" };
+
 export const canTranscribe = () => Boolean(BUCKET);
 
 /** Returns the spoken text of a WhatsApp voice note, or "" if nothing was said. Throws on failure. */
 export async function transcribeVoiceNote(mediaId, languages = ["es", "en"]) {
-  const key = `voice/${mediaId}.ogg`;
-  await social.send(
+  // EUM treats the key as a prefix and appends "<mediaId>.<ext>" itself.
+  const { mimeType = "audio/ogg" } = await social.send(
     new GetWhatsAppMessageMediaCommand({
       mediaId,
       originationPhoneNumberId: ORIGINATION_ID,
-      destinationS3File: { bucketName: BUCKET, key },
+      destinationS3File: { bucketName: BUCKET, key: "voice/" },
     })
   );
+  const ext = FORMATS[mimeType.split(";")[0].split("/")[1]];
+  if (!ext) throw new Error(`unsupported audio type ${mimeType}`);
+  const key = `voice/${mediaId}.${ext}`;
 
   const options = [...new Set(languages.map((l) => LOCALES[l]).filter(Boolean))];
   const job = `don-tuco-${mediaId}-${Date.now()}`.replace(/[^0-9a-zA-Z._-]/g, "").slice(0, 200);
@@ -34,7 +40,7 @@ export async function transcribeVoiceNote(mediaId, languages = ["es", "en"]) {
     new StartTranscriptionJobCommand({
       TranscriptionJobName: job,
       Media: { MediaFileUri: `s3://${BUCKET}/${key}` },
-      MediaFormat: "ogg",
+      MediaFormat: ext,
       ...(options.length >= 2 ? { IdentifyLanguage: true, LanguageOptions: options } : { LanguageCode: options[0] || "es-US" }),
     })
   );
