@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- Intro scenes, rendered frame by frame by record_intro.cjs (window.seek).
+     ?scene=cold     night: a guest writes at 22:47, Don Tuco's real reply lands, the toucan steps in
+     ?scene=overlay  transparent layer over Dorien's P1 clip (clip spans x 656..1264):
+                     guest messages pile up while she talks, then go unanswered -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --paper: #f6efe2; --ink: #2a1a0e; --orange: #e0752a; --leaf: #2e5e3a; --muted: #7a6a58; --wa: #1f8a4c; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; color: var(--ink); font-family: Inter, sans-serif; }
+  .scene { display: none; position: absolute; inset: 0; }
+  .kicker { font: 600 20px Inter, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: var(--orange); }
+  /* notification card, iOS/Android-neutral */
+  .note { position: absolute; width: 720px; padding: 24px 28px; border-radius: 28px; display: flex; gap: 20px;
+    background: rgba(255, 255, 255, .97); box-shadow: 0 30px 70px rgba(20, 10, 4, .35), 0 2px 8px rgba(20, 10, 4, .15);
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .note .face { width: 76px; height: 76px; border-radius: 50%; flex: none; background: #fff6d9 center / cover no-repeat; }
+  .note .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 16px; }
+  .note b { font-size: 28px; font-weight: 600; color: #111; }
+  .note .when { font-size: 21px; color: #8a8a8a; white-space: nowrap; }
+  .note p { font-size: 26px; line-height: 1.34; color: #2b2b2b; }
+  .guestface { background: #d9cbb2 !important; display: grid; place-items: center; font: 600 34px Inter, sans-serif; color: #fff; }
+  /* cold open */
+  #cold { background: #120b06; }
+  #cold .ghost { position: absolute; left: 0; right: 0; top: 120px; text-align: center; font: 700 330px/1 Fraunces, serif;
+    letter-spacing: -.02em; color: #e9dcc0; opacity: 0; }
+  #cold .bird { position: absolute; left: 160px; top: 90px; height: 960px; opacity: 0; filter: drop-shadow(0 30px 50px rgba(0,0,0,.35)); }
+  #cold .clock { position: absolute; left: 1060px; top: 150px; font: 600 120px/1 Inter, sans-serif; color: #f4ead6; letter-spacing: -.02em; }
+  #cold .date { position: absolute; left: 1064px; top: 285px; font: 500 28px Inter, sans-serif; color: #c9b99c; }
+  #cold .n1 { left: 1060px; top: 360px; }
+  #cold .n2 { left: 1060px; top: 560px; }
+  #cold .tag { position: absolute; left: 1064px; top: 800px; color: #f0b27a; }
+  /* overlay on P1 */
+  .stack { position: absolute; left: 0; top: 0; width: 656px; height: 1080px; }
+  .stack .kicker { position: absolute; left: 0; width: 656px; top: 120px; text-align: center; color: #fff4e0; text-shadow: 0 2px 10px rgba(0,0,0,.5); }
+  .msg { position: absolute; left: 40px; width: 576px; padding: 18px 22px; border-radius: 22px; display: flex; gap: 16px;
+    background: rgba(255,255,255,.97); box-shadow: 0 22px 50px rgba(10,6,2,.42); font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .msg .face { width: 54px; height: 54px; border-radius: 50%; flex: none; background: #d9cbb2; display: grid; place-items: center; font: 600 24px Inter, sans-serif; color: #fff; }
+  .msg .head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .msg b { font-size: 22px; color: #111; }
+  .msg .when { font-size: 18px; color: #8a8a8a; }
+  .msg p { font-size: 21px; line-height: 1.3; color: #2b2b2b; }
+  .msg .lang { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 8px; background: #efe6d4; font: 600 14px Inter, sans-serif; color: #7a6a58; vertical-align: 3px; }
+  .msg .miss { position: absolute; right: 16px; bottom: -14px; padding: 4px 12px; border-radius: 10px; background: #c0392b; color: #fff; font: 600 16px Inter, sans-serif; letter-spacing: .04em; opacity: 0; }
+  .name { position: absolute; left: 1334px; top: 744px; width: 516px; padding: 28px 32px 26px; border-radius: 18px;
+    background: rgba(246, 239, 226, .97); box-shadow: 0 24px 60px rgba(10, 6, 2, .38); }
+  .name h1 { font: 600 46px/1.05 Fraunces, serif; letter-spacing: -.01em; margin: 10px 0 12px; }
+  .name p { font-size: 22px; line-height: 1.35; color: #4b3a2a; }
+  .name .where { margin-top: 12px; display: flex; align-items: center; gap: 10px; color: var(--leaf); font: 500 21px Inter, sans-serif; }
+  .tally { position: absolute; left: 1334px; top: 300px; width: 516px; padding: 26px 32px; border-radius: 18px;
+    background: rgba(42, 26, 14, .94); color: #f6efe2; box-shadow: 0 24px 60px rgba(10, 6, 2, .38); opacity: 0; }
+  .tally .big { font: 700 92px/1 Fraunces, serif; color: #f0b27a; }
+  .tally p { font-size: 24px; line-height: 1.35; margin-top: 8px; }
+</style>
+</head>
+<body>
+<section id="cold" class="scene">
+  <div class="ghost">DON TUCO</div>
+  <img class="bird" src="BIRD">
+  <div class="clock">6.5 s</div>
+  <div class="date">from the guest's question to Don Tuco's answer</div>
+  <div class="note n1">
+    <div class="face guestface">S</div>
+    <div>
+      <div class="head"><b>Guest</b><span class="when">15:37</span></div>
+      <p>Hola! Tienen el tour de degustacion de cacao este sabado 31 para 4 personas?</p>
+    </div>
+  </div>
+  <div class="note n2">
+    <div class="face" style="background-image:url(AVATAR)"></div>
+    <div>
+      <div class="head"><b>Don Tuco · Finca Montezuma</b><span class="when">15:37</span></div>
+      <p>¡Hola! Con gusto te ayudo. ¿A qué hora les gustaría venir el sábado 31? Tenemos horarios a las 11:00 y a las 14:00.</p>
+    </div>
+  </div>
+  <div class="kicker tag">a real reply on WhatsApp · Oct 27, 2026</div>
+</section>
+
+<section id="overlay" class="scene">
+  <div class="stack">
+    <div class="kicker">Meanwhile, on WhatsApp</div>
+    <div class="msg"><div class="face">M</div><div><div class="head"><b>María <span class="lang">ES</span></b><span class="when">22:47</span></div><p>¿Tienen tour de cacao mañana para 3?</p></div><div class="miss">NO REPLY</div></div>
+    <div class="msg"><div class="face">J</div><div><div class="head"><b>Jake <span class="lang">EN</span></b><span class="when">06:12</span></div><p>Is the chocolate workshop running Saturday?</p></div><div class="miss">NO REPLY</div></div>
+    <div class="msg"><div class="face">L</div><div><div class="head"><b>Lotte <span class="lang">NL</span></b><span class="when">10:35</span></div><p>Hoi! Is er zaterdag plek voor 4 personen?</p></div><div class="miss">NO REPLY</div></div>
+    <div class="msg"><div class="face">A</div><div><div class="head"><b>Ana <span class="lang">ES</span></b><span class="when">23:58</span></div><p>¿Siguen con cupo para el sábado? Si no, reservamos otro tour.</p></div><div class="miss">NO REPLY</div></div>
+  </div>
+  <div class="tally"><div class="big">4 unanswered</div><p>Each one a guest who may book another tour instead.</p></div>
+  <div class="name">
+    <div class="kicker">Host &amp; builder</div>
+    <h1>Dorien Van den Abbeele</h1>
+    <p>Runs the tours at Finca Montezuma, a cacao farm</p>
+    <div class="where">
+      <svg width="18" height="24" viewBox="0 0 18 24"><path d="M9 1C4.6 1 1 4.5 1 8.9 1 14.6 9 23 9 23s8-8.4 8-14.1C17 4.5 13.4 1 9 1z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="9" r="2.8" fill="currentColor"/></svg>
+      Dolphin Bay, Bocas del Toro, Panamá
+    </div>
+  </div>
+</section>
+<script>
+  const q = new URLSearchParams(location.search);
+  const scene = q.get('scene') || 'cold';
+  const assets = q.get('assets') || '';
+  document.getElementById(scene).style.display = 'block';
+  document.querySelectorAll('img[src="BIRD"]').forEach((i) => { i.src = `file://${assets}/don-tuco-cutout.png`; });
+  document.querySelectorAll('[style*="AVATAR"]').forEach((e) => { e.style.backgroundImage = `url(file://${assets}/don-tuco-avatar-192.png)`; });
+  const clamp = (x) => Math.max(0, Math.min(1, x));
+  const ease = (k) => 1 - Math.pow(1 - k, 3);
+  const back = (k) => { const c = 1.5; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+  const prog = (t, from, len) => clamp((t - from) / len);
+  const pop = (el, t, at, dy = -70) => {
+    const k = prog(t, at, 0.45), b = back(k);
+    el.style.opacity = clamp(k * 3);
+    el.style.transform = `translateY(${(1 - b) * dy}px) scale(${0.96 + 0.04 * b})`;
+  };
+
+  // Cold open, 3.6 s: guest message at 0.25, Don Tuco's reply at 1.0 (chime), toucan + ghost word, tag.
+  const cold = (t) => {
+    pop(document.querySelector('#cold .n1'), t, 0.25);
+    pop(document.querySelector('#cold .n2'), t, 1.0);
+    const bk = ease(prog(t, 1.1, 1.0));
+    const bird = document.querySelector('#cold .bird');
+    bird.style.opacity = bk; bird.style.transform = `translateX(${(1 - bk) * -120}px)`;
+    const g = ease(prog(t, 1.3, 1.2));
+    const ghost = document.querySelector('#cold .ghost');
+    ghost.style.opacity = 0.14 * g; ghost.style.transform = `scale(${1.06 - 0.06 * g})`;
+    const tg = prog(t, 1.8, 0.4), tag = document.querySelector('#cold .tag');
+    tag.style.opacity = tg; tag.style.transform = `translateY(${(1 - ease(tg)) * 12}px)`;
+  };
+
+  // Overlay, timed to the P1 take: name card 0.4, "My guests book on WhatsApp" 8.2,
+  // "three or more languages" 11.4, "late at night" 15.3, "I miss messages" 19.1, "bookings" 20.8.
+  const MSGS = [ { at: 8.3, top: 190 }, { at: 11.5, top: 390 }, { at: 12.2, top: 590 }, { at: 15.4, top: 790 } ];
+  const overlay = (t) => {
+    const kk = prog(t, 8.0, 0.5), kick = document.querySelector('#overlay .stack .kicker');
+    kick.style.opacity = kk; kick.style.transform = `translateY(${(1 - ease(kk)) * 10}px)`;
+    document.querySelectorAll('#overlay .msg').forEach((el, i) => {
+      const m = MSGS[i];
+      el.style.top = m.top + 'px';
+      pop(el, t, m.at, -60);
+      const miss = prog(t, 19.1 + i * 0.18, 0.3);
+      el.querySelector('.miss').style.opacity = miss;
+      el.style.filter = `grayscale(${miss * 0.6})`;
+      if (miss > 0) el.style.opacity = 1 - 0.35 * miss;
+    });
+    const n = ease(prog(t, 0.4, 0.6)) * (1 - ease(prog(t, 18.6, 0.5)));
+    const name = document.querySelector('#overlay .name');
+    name.style.opacity = n; name.style.transform = `translateX(${(1 - n) * 80}px)`;
+    const tl = prog(t, 20.6, 0.5), tally = document.querySelector('#overlay .tally');
+    tally.style.opacity = tl; tally.style.transform = `translateX(${(1 - ease(tl)) * 80}px)`;
+  };
+  window.seek = (t) => ({ cold, overlay })[scene](t);
+  window.seek(0);
+  Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))])
+    .then(() => { window.__ready = true; });
+</script>
+</body>
+</html>

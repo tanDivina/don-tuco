@@ -12,11 +12,11 @@
   },
   "lines": {
     "n_intro": "So I built Don Tuco. He's our farm's host, and he lives right inside WhatsApp, on AWS.",
-    "n_wedge": "Small tour operators across Latin America run their whole business from one personal WhatsApp number. And according to AWS, Latin America is over forty percent of all WhatsApp Business adoption.",
+    "n_wedge": "And it's not just my farm. According to AWS, Latin America is over forty percent of all WhatsApp Business adoption.",
     "n_demo": "This is a real conversation, on my phone, with the live agent.",
     "n_demo_book": "He checks the real calendar, quotes the price, and writes the booking to the ledger. The confirmation email goes out through Amazon SES.",
     "n_demo_more": "Directions arrive as a WhatsApp location pin. He's honest that he's an AI. And anything he shouldn't decide, he hands straight to me.",
-    "n_arch": "Under the hood, Don Tuco follows the AWS reference pattern for WhatsApp agents. AWS End User Messaging Social delivers every message to Amazon SNS and Lambda, where a Claude agent on Amazon Bedrock works with six booking tools. DynamoDB keeps the ledger and the twenty-four hour conversation window, and SES sends the confirmations. There's no third-party WhatsApp provider in between, and billing stays on AWS.",
+    "n_arch": "Under the hood, AWS End User Messaging Social delivers every message through Amazon SNS to Lambda, where a Claude agent on Amazon Bedrock works with six booking tools. DynamoDB keeps the ledger, every booking lands in my Google Calendar, and SES sends the confirmations. No third-party WhatsApp provider, and billing stays on AWS.",
     "n_numbers": "Measured on the live agent: a median reply in about eight seconds, from the guest's message to the answer, and about two cents per reply, all in.",
     "n_pack": "Everything about my farm lives in one config file: tours, prices, time slots, languages and directions. A new operator is a new file, not a new build.",
     "n_close": "Don Tuco. Every guest greeted in seconds, every booking in the ledger."

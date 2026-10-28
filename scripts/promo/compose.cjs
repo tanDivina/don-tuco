@@ -71,15 +71,28 @@ function slate(label, script, seconds, cues = []) {
   segs.push(out); console.log(`… ${path.basename(out)} SLATE ${label} ${seconds}s`);
 }
 
-// Dorien on camera: any orientation, fitted on paper, own sound kept.
-function personal(base, label, script, seconds) {
+// Dorien on camera: centred, the side strips filled with a blurred copy of the clip,
+// plus an optional transparent overlay (record_intro.cjs) on top. Own sound kept.
+function personal(base, label, script, seconds, overlay) {
   const f = find(base);
   if (!f) return slate(label, script, seconds);
   const len = dur(f); const out = next();
-  const v = `[0:v]scale=1920:1080:force_original_aspect_ratio=decrease:flags=lanczos,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=${PAPER},setsar=1,format=yuv420p[v]`;
+  const ov = overlay && fs.existsSync(path.join(WORK, overlay)) ? path.join(WORK, overlay) : null;
+  const v = `[0:v]split[bg0][fg0];[bg0]scale=1920:-2,crop=1920:1080:0:(ih-1080)*0.55,boxblur=28:2,eq=brightness=-0.07:saturation=0.85[bg];` +
+    `[fg0]scale=-2:1080:flags=lanczos[fg];[bg][fg]overlay=(W-w)/2:0` + (ov ? `[base];[base][1:v]overlay=0:0:eof_action=pass` : '') + `,setsar=1,format=yuv420p[v]`;
   const a = hasAudio(f) ? `[0:a]aformat=sample_rates=48000:channel_layouts=stereo,loudnorm=I=-16:TP=-1.5[aout]` : `anullsrc=r=48000:cl=stereo,atrim=0:${len}[aout]`;
-  ff(['-i', f, '-filter_complex', `${v};${a}`, '-map', '[v]', '-map', '[aout]', ...V_OUT, ...A_OUT, '-t', len.toFixed(3), out]);
-  segs.push(out); console.log(`✓ ${path.basename(out)} personal ${path.basename(f)} ${len.toFixed(1)}s`);
+  ff(['-i', f, ...(ov ? ['-i', ov] : []), '-filter_complex', `${v};${a}`, '-map', '[v]', '-map', '[aout]', ...V_OUT, ...A_OUT, '-t', len.toFixed(3), out]);
+  segs.push(out); console.log(`✓ ${path.basename(out)} personal ${path.basename(f)} ${len.toFixed(1)}s${ov ? ' + overlay' : ''}`);
+}
+
+// A pre-rendered clip with its own sound (the cold open), normalised to the segment format.
+function own(rel) {
+  const f = path.join(WORK, rel);
+  if (!fs.existsSync(f)) return;
+  const len = dur(f); const out = next();
+  ff(['-i', f, '-filter_complex', `[0:v]scale=1920:1080,setsar=1,format=yuv420p[v];[0:a]aformat=sample_rates=48000:channel_layouts=stereo[aout]`,
+    '-map', '[v]', '-map', '[aout]', ...V_OUT, ...A_OUT, '-t', len.toFixed(3), out]);
+  segs.push(out); console.log(`✓ ${path.basename(out)} ${rel} ${len.toFixed(1)}s`);
 }
 
 // The real WhatsApp chat: phone screen beside the site's poster colors, narration over it.
@@ -107,7 +120,7 @@ function phone(base, cues, seconds) {
   const editFile = path.join(PERSONAL, 'whatsapp_edit.json');
   if (!f || !fs.existsSync(editFile)) return slate('Your clip: real WhatsApp demo (scrcpy)', 'The live conversation with Don Tuco on your phone. See the chat script.', seconds, cues);
   const ed = JSON.parse(fs.readFileSync(editFile, 'utf8'));
-  const WAIT_SHOWN = 2.5, TYPE_TAIL = 2.2;
+  const WAIT_SHOWN = 2.5, TYPE_TAIL = 2.2, READ_TRIM = 1.0;
   const pieces = []; const stamps = []; let t = 0;
   ed.exchanges.forEach((x, i) => {
     const a = i === 0 ? x.sent - ed.lead : x.sent - TYPE_TAIL;
@@ -115,7 +128,8 @@ function phone(base, cues, seconds) {
     const real = x.reply - x.sent, k = Math.max(1, real / WAIT_SHOWN);
     const waitStart = t;
     pieces.push({ a: x.sent, b: x.reply, k }); t += real / k;
-    pieces.push({ a: x.reply, b: x.reply + x.read, k: 1 }); t += x.read;
+    const read = Math.max(3, x.read - READ_TRIM); // keeps the cut under 3:00
+    pieces.push({ a: x.reply, b: x.reply + read, k: 1 }); t += read;
     stamps.push({ i, from: waitStart, to: t, x, real });
   });
   const len = t;
@@ -158,8 +172,10 @@ function phone(base, cues, seconds) {
 
 fs.readdirSync(SEG).forEach((f) => fs.unlinkSync(path.join(SEG, f)));
 
+// Cold open: a real Don Tuco reply landing (record_intro.cjs), then Dorien with the overlay.
+own('intro/cold.mp4');
 personal('p1_open', 'Your clip P1: cold open, about 12 s',
-  "Hi, I'm Dorien. I run tours at Finca Montezuma, a cacao farm in Bocas del Toro. My guests book on WhatsApp, at ten at night, in three languages, while I'm out on the boat. I miss messages, and I miss bookings.", 13);
+  "Hi, I'm Dorien. I run tours at Finca Montezuma, a cacao farm in Bocas del Toro. My guests book on WhatsApp, in three languages: late at night, or while I'm out on the boat with a group. I miss messages, and I miss bookings.", 13, 'intro/overlay.mov');
 site('hero', [{ line: 'n_intro', t: LEAD }]);
 site('wedge', [{ line: 'n_wedge', t: LEAD }]);
 phone('whatsapp_demo', [{ line: 'n_demo', t: 'start' }, { line: 'n_demo_book', t: 'ex1' }, { line: 'n_demo_more', t: 'ex3' }], 60);
@@ -167,9 +183,9 @@ site('arch', [{ line: 'n_arch', t: LEAD }]);
 site('numbers', [{ line: 'n_numbers', t: LEAD }]);
 site('pack', [{ line: 'n_pack', t: LEAD }]);
 personal('p2_story', 'Your clip P2: the business story, about 18 s',
-  "Finca Montezuma is customer number one, and it's taking real bookings this way. I also build websites for tour operators across Bocas and the Caribbean. They all live on WhatsApp too, and each one is a single config file away from their own Don Tuco.", 18);
+  "Don Tuco runs at our own farm first, and he's taking real bookings. I also build websites for tour operators across Bocas and the Caribbean, like my partner Papito's boat tours. They all live on WhatsApp too, and each one is a single config file away from their own Don Tuco.", 18);
 site('close', [{ line: 'n_close', t: LEAD }]);
-personal('p3_signoff', 'Your clip P3 (optional): sign-off, about 5 s',
+if (find('p3_signoff')) if (find('p3_signoff')) personal('p3_signoff', 'Your clip P3 (optional): sign-off, about 5 s',
   'Write to Don Tuco yourself, the number is on screen. ¡Nos vemos en la finca!', 5);
 
 // Concatenate the picture + voice track.
