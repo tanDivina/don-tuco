@@ -106,11 +106,25 @@ async function escalateToOwner(msg, reason) {
   return channel;
 }
 
+// Voice notes, photos and pins reach the agent as a note, so the guest gets an answer instead of silence.
+function mediaNote(msg) {
+  if (msg.type === "location" && msg.location) {
+    const { latitude, longitude, name } = msg.location;
+    return `[The guest shared a location: ${name ? name + ", " : ""}${latitude}, ${longitude}]`;
+  }
+  if (msg.type === "audio") return "[The guest sent a voice note. You can't listen to voice notes yet: say so and ask them to type it.]";
+  return `[The guest sent a ${msg.type || "file"} you can't see. Say so and ask them to describe what they need in text.]`;
+}
+
 export async function handler(event) {
   for (const record of event.Records || []) {
     const inbound = parseInbound(record.Sns?.Message || "{}");
     for (const msg of inbound) {
-      if (!msg.text) continue; // media/status events: skip for now
+      if (msg.type === "reaction") continue;
+      if (!msg.text) {
+        if (isOwner(pack, msg.waId)) continue;
+        msg.text = mediaNote(msg);
+      }
       const t0 = Date.now();
 
       if (isOwner(pack, msg.waId)) {

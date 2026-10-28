@@ -31,6 +31,7 @@ export function parseInbound(snsMessage) {
           timestamp: Number(msg.timestamp) * 1000,
           type: msg.type,
           text: msg.text?.body || msg.interactive?.list_reply?.title || msg.interactive?.button_reply?.title || "",
+          location: msg.location,
           guestName: value.contacts?.[0]?.profile?.name || "",
         });
       }
