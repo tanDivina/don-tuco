@@ -54,6 +54,27 @@
     background: rgba(42, 26, 14, .94); color: #f6efe2; box-shadow: 0 24px 60px rgba(10, 6, 2, .38); opacity: 0; }
   .tally .big { font: 700 92px/1 Fraunces, serif; color: #f0b27a; }
   .tally p { font-size: 24px; line-height: 1.35; margin-top: 8px; }
+  /* overlay on P2: sites Dorien built + the next operator's config pack */
+  .site { position: absolute; left: 68px; width: 520px; border-radius: 14px; overflow: hidden; background: #fff;
+    box-shadow: 0 26px 60px rgba(10, 6, 2, .45), 0 2px 6px rgba(10, 6, 2, .25); }
+  .site .bar { height: 34px; background: #efeae0; display: flex; align-items: center; gap: 7px; padding: 0 14px; }
+  .site .bar i { width: 10px; height: 10px; border-radius: 50%; background: #cfc6b4; }
+  .site .bar span { margin-left: 12px; flex: 1; height: 22px; border-radius: 11px; background: #fff; font: 13px -apple-system, Helvetica, sans-serif;
+    color: #6b6255; display: flex; align-items: center; padding-left: 12px; }
+  .site img { display: block; width: 520px; height: 260px; object-fit: cover; object-position: top; }
+  .site .wa { position: absolute; right: 12px; bottom: 12px; padding: 6px 12px; border-radius: 12px; background: #1f8a4c; color: #fff;
+    font: 600 16px Inter, sans-serif; opacity: 0; box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+  .cust { position: absolute; left: 1334px; top: 140px; width: 516px; padding: 26px 32px; border-radius: 18px;
+    background: rgba(246, 239, 226, .97); box-shadow: 0 24px 60px rgba(10, 6, 2, .38); }
+  .cust h1 { font: 600 44px/1.05 Fraunces, serif; margin: 10px 0 10px; }
+  .cust p { font-size: 22px; line-height: 1.35; color: #4b3a2a; }
+  .cust .live { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; color: #1f8a4c; font: 600 20px Inter, sans-serif; }
+  .cust .live i { width: 10px; height: 10px; border-radius: 50%; background: #1f8a4c; }
+  .pack { position: absolute; left: 1334px; top: 560px; width: 516px; padding: 22px 26px; border-radius: 18px; background: rgba(36, 19, 9, .96);
+    color: #f3e7d3; font: 18px/1.5 Menlo, monospace; box-shadow: 0 24px 60px rgba(10, 6, 2, .38); opacity: 0; }
+  .pack .file { font: 600 15px Inter, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #f0b27a; margin-bottom: 10px; }
+  .pack .k { color: #e9a86b; } .pack .v { color: #b9d39a; }
+  .pack .cap { margin-top: 12px; font: italic 500 22px Fraunces, serif; color: #f6efe2; }
 </style>
 </head>
 <body>
@@ -98,12 +119,33 @@
     </div>
   </div>
 </section>
+<section id="overlay2" class="scene">
+  <div class="stack">
+    <div class="kicker">Sites I built</div>
+    <div class="site"><div class="bar"><i></i><i></i><i></i><span>finca-montezuma.com</span></div><img src="SITE2"><div class="wa">WhatsApp: Don Tuco</div></div>
+    <div class="site"><div class="bar"><i></i><i></i><i></i><span>bocasnaturetours.com</span></div><img src="SITE3"><div class="wa">WhatsApp: next</div></div>
+    <div class="site"><div class="bar"><i></i><i></i><i></i><span>panacacao.com</span></div><img src="SITE1"><div class="wa">WhatsApp: next</div></div>
+  </div>
+  <div class="cust">
+    <div class="kicker">Customer #1</div>
+    <h1>Finca Montezuma</h1>
+    <p>Cacao farm, Dolphin Bay, Bocas del Toro</p>
+    <div class="live"><i></i>Don Tuco live on +1 414 261 7820</div>
+  </div>
+  <div class="pack">
+    <div class="file">packs/papitos-nature-tours.json</div>
+    {<br>&nbsp;&nbsp;<span class="k">"businessName"</span>: <span class="v">"Papito's Nature Tours"</span>,<br>&nbsp;&nbsp;<span class="k">"languages"</span>: [<span class="v">"es"</span>, <span class="v">"en"</span>],<br>&nbsp;&nbsp;<span class="k">"tours"</span>: [ ... ],<br>&nbsp;&nbsp;<span class="k">"standardSlots"</span>: [<span class="v">"09:00"</span>, <span class="v">"13:00"</span>]<br>}
+    <div class="cap">One file, their own Don Tuco.</div>
+  </div>
+</section>
 <script>
   const q = new URLSearchParams(location.search);
   const scene = q.get('scene') || 'cold';
   const assets = q.get('assets') || '';
   document.getElementById(scene).style.display = 'block';
   document.querySelectorAll('img[src="BIRD"]').forEach((i) => { i.src = `file://${assets}/don-tuco-cutout.png`; });
+  const work = q.get('work') || '';
+  document.querySelectorAll('img[src^="SITE"]').forEach((img) => { img.src = `file://${work}/intro/site-${img.getAttribute('src').slice(4)}.png`; });
   document.querySelectorAll('[style*="AVATAR"]').forEach((e) => { e.style.backgroundImage = `url(file://${assets}/don-tuco-avatar-192.png)`; });
   const clamp = (x) => Math.max(0, Math.min(1, x));
   const ease = (k) => 1 - Math.pow(1 - k, 3);
@@ -150,7 +192,26 @@
     const tl = prog(t, 20.6, 0.5), tally = document.querySelector('#overlay .tally');
     tally.style.opacity = tl; tally.style.transform = `translateX(${(1 - ease(tl)) * 80}px)`;
   };
-  window.seek = (t) => ({ cold, overlay })[scene](t);
+  // Overlay on P2, timed to the take: customer card 0.3, "I also build websites" 7.6,
+  // "They all live on WhatsApp too" 13.3, "a single config file" 16.4.
+  const SITES = [ { at: 8.0, top: 190, rot: -3, dx: -12 }, { at: 9.0, top: 470, rot: 2, dx: 14 }, { at: 10.2, top: 750, rot: -1.5, dx: -6 } ];
+  const overlay2 = (t) => {
+    const kk = prog(t, 7.7, 0.5), kick = document.querySelector('#overlay2 .stack .kicker');
+    kick.style.opacity = kk; kick.style.transform = `translateY(${(1 - ease(kk)) * 10}px)`;
+    document.querySelectorAll('#overlay2 .site').forEach((el, i) => {
+      const c = SITES[i], k = prog(t, c.at, 0.5), b = back(k);
+      el.style.top = c.top + 'px';
+      el.style.opacity = clamp(k * 3);
+      el.style.transform = `translate(${c.dx}px, ${(1 - b) * -60}px) rotate(${c.rot * b}deg) scale(${1.06 - 0.06 * b})`;
+      const w = prog(t, 13.4 + i * 0.25, 0.35), wa = el.querySelector('.wa');
+      wa.style.opacity = w; wa.style.transform = `scale(${0.8 + 0.2 * back(w)})`;
+    });
+    const c = ease(prog(t, 0.3, 0.6)), cust = document.querySelector('#overlay2 .cust');
+    cust.style.opacity = c; cust.style.transform = `translateX(${(1 - c) * 80}px)`;
+    const pk = prog(t, 16.3, 0.5), pack = document.querySelector('#overlay2 .pack');
+    pack.style.opacity = pk; pack.style.transform = `translateY(${(1 - back(pk)) * 50}px)`;
+  };
+  window.seek = (t) => ({ cold, overlay, overlay2 })[scene](t);
   window.seek(0);
   Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))])
     .then(() => { window.__ready = true; });

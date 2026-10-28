@@ -183,7 +183,7 @@ site('arch', [{ line: 'n_arch', t: LEAD }]);
 site('numbers', [{ line: 'n_numbers', t: LEAD }]);
 site('pack', [{ line: 'n_pack', t: LEAD }]);
 personal('p2_story', 'Your clip P2: the business story, about 18 s',
-  "Don Tuco runs at our own farm first, and he's taking real bookings. I also build websites for tour operators across Bocas and the Caribbean, like my partner Papito's boat tours. They all live on WhatsApp too, and each one is a single config file away from their own Don Tuco.", 18);
+  "Don Tuco runs at our own farm first, and he's taking real bookings. I also build websites for tour operators across Bocas and the Caribbean, like my partner Papito's boat tours. They all live on WhatsApp too, and each one is a single config file away from their own Don Tuco.", 18, 'intro/overlay2.mov');
 site('close', [{ line: 'n_close', t: LEAD }]);
 if (find('p3_signoff')) if (find('p3_signoff')) personal('p3_signoff', 'Your clip P3 (optional): sign-off, about 5 s',
   'Write to Don Tuco yourself, the number is on screen. ¡Nos vemos en la finca!', 5);

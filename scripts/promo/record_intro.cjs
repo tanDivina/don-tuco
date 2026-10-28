@@ -2,7 +2,8 @@
 // Renders intro.html frame by frame (same approach as the Lucienne video):
 //   WORK/intro/cold.mp4     night cold open (3.6 s) with a soft chime as Don Tuco's reply lands
 //   WORK/intro/overlay.mov  transparent layer (PNG in MOV) for the P1 clip, same length as the clip
-// Usage: node record_intro.cjs [workdir] [cold,overlay]
+//   WORK/intro/overlay2.mov the same for the P2 clip (sites Dorien built; needs WORK/intro/site-1..3.png)
+// Usage: node record_intro.cjs [workdir] [cold,overlay,overlay2]
 const fs = require('fs');
 const path = require('path');
 const { spawn, execSync } = require('child_process');
@@ -13,7 +14,8 @@ const FFMPEG = '/opt/homebrew/bin/ffmpeg';
 const WORK = process.argv[2] || path.join(process.env.HOME, 'Desktop', 'DonTuco_Video', 'promo_work');
 const only = process.argv[3] ? process.argv[3].split(',') : null;
 const ASSETS = path.join(__dirname, '..', '..', 'site', 'assets');
-const P1 = ['.mp4', '.mov', '.MOV'].map((e) => path.join(WORK, '..', 'personal', 'p1_open' + e)).find(fs.existsSync);
+const clip = (b) => ['.mp4', '.mov', '.MOV'].map((e) => path.join(WORK, '..', 'personal', b + e)).find(fs.existsSync);
+const P1 = clip('p1_open'), P2 = clip('p2_story');
 const dur = (f) => parseFloat(execSync(`/opt/homebrew/bin/ffprobe -v error -show_entries format=duration -of csv=p=0 "${f}"`).toString());
 const COLD = 3.6, CHIME_AT = 1.0;
 
@@ -25,7 +27,7 @@ const run = (args) => new Promise((res, rej) => {
 async function render(browser, scene, seconds, out, alpha) {
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 });
-  await page.goto('file://' + path.join(__dirname, 'intro.html') + `?scene=${scene}&assets=${encodeURIComponent(ASSETS)}`, { waitUntil: 'networkidle0' });
+  await page.goto('file://' + path.join(__dirname, 'intro.html') + `?scene=${scene}&assets=${encodeURIComponent(ASSETS)}&work=${encodeURIComponent(WORK)}`, { waitUntil: 'networkidle0' });
   await page.waitForFunction(() => window.__ready === true);
   const enc = alpha ? ['-c:v', 'png', '-pix_fmt', 'rgba'] : ['-c:v', 'libx264', '-preset', 'fast', '-crf', '16', '-pix_fmt', 'yuv420p'];
   const ff = spawn(FFMPEG, ['-y', '-framerate', '30', '-f', 'image2pipe', '-vcodec', alpha ? 'png' : 'mjpeg', '-i', '-', ...enc, out]);
@@ -59,6 +61,7 @@ async function main() {
     console.log('✓ cold.mp4 with chime');
   }
   if ((!only || only.includes('overlay')) && P1) await render(browser, 'overlay', dur(P1), path.join(dir, 'overlay.mov'), true);
+  if ((!only || only.includes('overlay2')) && P2) await render(browser, 'overlay2', dur(P2), path.join(dir, 'overlay2.mov'), true);
   await browser.close();
 }
 main().catch((e) => { console.error(e); process.exit(1); });
